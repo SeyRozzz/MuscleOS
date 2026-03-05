@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MuscleOS — Calculateur · Exercices · Programme · Suivi</title>
+  <meta name="description" content="MuscleOS : calculateur scientifique de prise de masse, bibliothèque d'exercices, générateur de programme et suivi de progression. Tout-en-un, gratuit.">
+  <meta name="keywords" content="calculateur prise de masse, programme musculation, exercices musculation, suivi progression, whey protéine">
+  <meta name="theme-color" content="#080909">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <!-- Strategy cards CSS inline (dépend de components) -->
+  <style>
+    .strategy-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .strategy-card { background:var(--surface2); border:2px solid var(--border); border-radius:var(--r-lg); padding:20px; cursor:pointer; transition:all 0.2s; position:relative; }
+    .strategy-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-card); }
+    .strategy-card.selected.lean      { border-color:var(--ok);   box-shadow:0 0 0 1px var(--ok); }
+    .strategy-card.selected.standard  { border-color:var(--ice);  box-shadow:0 0 0 1px var(--ice); }
+    .strategy-card.selected.agressive { border-color:var(--fire); box-shadow:var(--shadow-fire); }
+    .strategy-badge { display:inline-block; padding:3px 9px; border-radius:100px; font-size:0.62rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px; background:var(--fire-dim); color:var(--fire); }
+    .strategy-name { font-family:var(--font-display); font-weight:800; font-size:1.2rem; letter-spacing:-0.02em; color:var(--text); margin-bottom:3px; }
+    .strategy-range { font-size:0.78rem; color:var(--text3); margin-bottom:12px; }
+    .strategy-stat-row { display:flex; justify-content:space-between; padding:6px 0; border-top:1px solid var(--border); font-size:0.78rem; }
+    .strategy-stat-row span { color:var(--text3); }
+    .strategy-stat-row strong { font-family:var(--font-display); font-weight:700; color:var(--text); }
+    .check-icon { position:absolute; top:12px; right:12px; width:20px; height:20px; border-radius:50%; background:var(--fire); display:none; align-items:center; justify-content:center; font-size:0.62rem; color:#000; font-weight:700; }
+    .strategy-card.selected .check-icon { display:flex; }
+    .proj-card { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-lg); padding:20px; text-align:center; }
+    .proj-period { font-size:0.66rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--text3); margin-bottom:8px; }
+    .proj-muscle-val { font-family:var(--font-display); font-weight:800; font-size:2.5rem; color:var(--fire); line-height:1; letter-spacing:-0.02em; }
+    .proj-muscle-unit { font-size:0.75rem; color:var(--text3); margin-bottom:4px; }
+    .proj-fat-note { font-size:0.76rem; color:var(--warn); }
+    .dot-indicator { display:inline-flex; align-items:center; gap:7px; }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--fire); flex-shrink:0; }
+    .dot.ice  { background:var(--ice); }
+    .dot.gold { background:var(--gold); }
+    .dot.ok   { background:var(--ok); }
+    @media(max-width:700px){ .strategy-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+<div class="mesh-bg" aria-hidden="true"></div>
+
+<div class="site-wrapper">
+
+  <!-- ══ HEADER ══ -->
+  <header class="site-header" role="banner">
+    <a href="/" class="logo" aria-label="MuscleOS">
+      <div class="logo-mark" aria-hidden="true">M</div>
+      <span class="logo-text">Muscle<span>OS</span></span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navigation principale">
+      <button class="nav-btn active" data-page="calc" aria-label="Calculateur">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 5h6M5 8h6M5 11h3"/></svg>
+        Calculateur
+      </button>
+      <button class="nav-btn" data-page="library" aria-label="Exercices">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>
+        Exercices
+      </button>
+      <button class="nav-btn" data-page="program" aria-label="Programme">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10M3 8h7M3 12h5"/></svg>
+        Programme
+      </button>
+      <button class="nav-btn" data-page="logbook" aria-label="Suivi">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M6 6h4M6 9h4M6 12h2"/></svg>
+        Suivi
+      </button>
+      <button class="nav-btn" data-page="timer" aria-label="Timer">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="9" r="5"/><path d="M8 6v3M6 2h4"/></svg>
+        Timer
+      </button>
+    </nav>
+
+    <div class="header-right">
+      <div class="live-dot" aria-label="Système actif">Actif</div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 1 — CALCULATEUR
+  ════════════════════════════════════════════ -->
+  <div class="page active" id="page-calc" role="main">
+    <div class="page-container">
+
+      <div class="page-hero">
+        <div class="page-eyebrow">⚡ Algorithme triple modèle</div>
+        <h1 class="page-title">Calcule ton plan<br><span>de prise de masse</span></h1>
+        <p class="page-sub">Besoins caloriques précis, protéines optimales et projection réaliste — Mifflin · Harris-Benedict · Katch-McArdle.</p>
+      </div>
+
+      <!-- Step tracker -->
+      <nav class="step-track" aria-label="Étapes">
+        <div class="step-line" id="stepLine"></div>
+        <div class="step-node active" tabindex="0"><div class="step-node-c">1</div><div class="step-node-lbl">Profil</div></div>
+        <div class="step-node" tabindex="0"><div class="step-node-c">2</div><div class="step-node-lbl">Activité</div></div>
+        <div class="step-node" tabindex="0"><div class="step-node-c">3</div><div class="step-node-lbl">Nutrition</div></div>
+        <div class="step-node" tabindex="0"><div class="step-node-c">4</div><div class="step-node-lbl">Résultats</div></div>
+        <div class="step-node" tabindex="0"><div class="step-node-c">5</div><div class="step-node-lbl">Protéines</div></div>
+      </nav>
+
+      <!-- STEP 1 -->
+      <div class="step-panel active" id="cstep1">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Profil physique</div><div class="card-sub">Calibration des modèles métaboliques.</div></div>
+            <div class="card-icon">🧬</div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label class="field-label" for="age">Âge (ans)</label><input type="number" id="age" min="14" max="75" placeholder="25" inputmode="numeric"></div>
+            <div class="form-group"><label class="field-label" for="sex">Sexe biologique</label><select id="sex"><option value="male">Homme</option><option value="female">Femme</option></select></div>
+            <div class="form-group"><label class="field-label" for="height">Taille (cm)</label><input type="number" id="height" min="140" max="220" placeholder="178" inputmode="numeric"></div>
+            <div class="form-group"><label class="field-label" for="weight">Poids (kg)</label><input type="number" id="weight" min="40" max="180" step="0.5" placeholder="75" inputmode="decimal"></div>
+            <div class="form-group span-2">
+              <label class="field-label" for="bodyfat">% Masse grasse</label>
+              <div class="slider-wrap">
+                <div class="slider-header"><span class="field-label">Graisse corporelle</span><div class="slider-val" id="bfVal">20%</div></div>
+                <input type="range" id="bodyfat" min="5" max="45" value="20">
+                <div class="slider-labels"><span>5% — Athlète</span><span>45% — Obésité</span></div>
+              </div>
+            </div>
+            <div class="form-group span-2">
+              <label class="field-label">Niveau musculaire</label>
+              <div class="pill-group" role="radiogroup">
+                <div class="pill"><input type="radio" name="level" id="lv1" value="beginner" checked><label for="lv1">Débutant &lt;1 an</label></div>
+                <div class="pill"><input type="radio" name="level" id="lv2" value="intermediate"><label for="lv2">Intermédiaire 1–3 ans</label></div>
+                <div class="pill"><input type="radio" name="level" id="lv3" value="advanced"><label for="lv3">Avancé 3–6 ans</label></div>
+                <div class="pill"><input type="radio" name="level" id="lv4" value="elite"><label for="lv4">Élite 6+ ans</label></div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary btn-lg" id="btn-c1-next">Activité →</button></div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-panel" id="cstep2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Activité & entraînement</div><div class="card-sub">TDEE calculé avec correction EPOC post-exercice.</div></div>
+            <div class="card-icon">⚡</div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group span-2"><label class="field-label" for="activity">Niveau d'activité quotidienne</label>
+              <select id="activity">
+                <option value="1.2">Sédentaire — Bureau, peu de déplacements</option>
+                <option value="1.375">Légèrement actif — 1–2 activités/sem</option>
+                <option value="1.55" selected>Modérément actif — 3–4 séances/sem</option>
+                <option value="1.725">Très actif — 5–6 séances intenses/sem</option>
+                <option value="1.9">Athlète — 2×/jour, travail physique</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Séances / semaine</label>
+              <div class="slider-wrap">
+                <div class="slider-header"><span></span><div class="slider-val" id="spwVal">4 séances</div></div>
+                <input type="range" id="sessionsPerWeek" min="1" max="7" value="4">
+                <div class="slider-labels"><span>1×</span><span>7×</span></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Durée moyenne séance</label>
+              <div class="slider-wrap">
+                <div class="slider-header"><span></span><div class="slider-val" id="sdVal">60 min</div></div>
+                <input type="range" id="sessionDuration" min="30" max="120" value="60" step="5">
+                <div class="slider-labels"><span>30 min</span><span>2h</span></div>
+              </div>
+            </div>
+            <div class="form-group span-2">
+              <label class="field-label">Objectif de prise de masse</label>
+              <div class="pill-group" role="radiogroup">
+                <div class="pill"><input type="radio" name="goal" id="g1" value="lean" checked><label for="g1">🟢 Lean Bulk +150–250 kcal</label></div>
+                <div class="pill"><input type="radio" name="goal" id="g2" value="standard"><label for="g2">🔵 Standard +300–400 kcal</label></div>
+                <div class="pill"><input type="radio" name="goal" id="g3" value="agressive"><label for="g3">🔴 Agressif +500 kcal+</label></div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row"><button class="btn btn-secondary" id="btn-c2-back">← Profil</button><button class="btn btn-primary btn-lg" id="btn-c2-next">Nutrition →</button></div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-panel" id="cstep3">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Habitudes nutritionnelles</div><div class="card-sub">Pour calculer ton déficit protéique et optimiser la supplémentation.</div></div>
+            <div class="card-icon">🥗</div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group"><label class="field-label" for="meals">Repas / jour</label><select id="meals"><option value="2">2 repas</option><option value="3" selected>3 repas</option><option value="4">4 repas</option><option value="5">5 repas</option><option value="6">6 repas+</option></select></div>
+            <div class="form-group"><label class="field-label" for="dietaryProtein">Protéines alim. (g/j)</label><input type="number" id="dietaryProtein" min="0" max="400" placeholder="80" value="80" inputmode="numeric"></div>
+            <div class="form-group"><label class="field-label" for="wheyPerScoop">Protéines / scoop whey (g)</label><input type="number" id="wheyPerScoop" min="10" max="50" placeholder="25" value="25" inputmode="numeric"></div>
+            <div class="form-group"><label class="field-label" for="trainingTime">Moment entraînement</label><select id="trainingTime"><option value="morning">Matin (avant 12h)</option><option value="afternoon" selected>Après-midi (12h–18h)</option><option value="evening">Soir (après 18h)</option></select></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-secondary" id="btn-c3-back">← Activité</button><button class="btn btn-primary btn-lg" id="btn-calculate">⚡ Calculer mon plan</button></div>
+        </div>
+      </div>
+
+      <!-- STEP 4 — RÉSULTATS -->
+      <div class="step-panel" id="cstep4">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Métabolisme & besoins</div><div class="card-sub">Moyenne pondérée 3 modèles scientifiques.</div></div><div class="card-icon">📊</div></div>
+          <div class="metrics-grid">
+            <div class="metric-box"><div class="metric-label">Métabolisme de base</div><div class="metric-value"><span id="res-bmr">—</span><span class="metric-unit">kcal</span></div><div class="metric-note">3 modèles pondérés</div></div>
+            <div class="metric-box ice"><div class="metric-label">Dépense totale (TDEE)</div><div class="metric-value"><span id="res-tdee">—</span><span class="metric-unit">kcal</span></div><div class="metric-note">Activité + EPOC</div></div>
+            <div class="metric-box"><div class="metric-label">Objectif calorique</div><div class="metric-value"><span id="res-kcal">—</span><span class="metric-unit">kcal</span></div><div class="metric-note">Surplus <span id="res-surplus">—</span> kcal/j</div></div>
+            <div class="metric-box gold"><div class="metric-label">Protéines cibles</div><div class="metric-value"><span id="res-prot">—</span><span class="metric-unit">g/j</span></div><div class="metric-note"><span id="res-ratio">—</span></div></div>
+          </div>
+          <hr class="card-divider">
+          <div class="section-label">Macronutriments</div>
+          <div class="macro-bar-row"><div class="macro-label">Protéines</div><div class="macro-track"><div class="pbar-fill fire" id="mb-p"></div></div><div class="macro-grams" id="macro-p-g">—</div></div>
+          <div class="macro-bar-row"><div class="macro-label">Glucides</div><div class="macro-track"><div class="pbar-fill ice" id="mb-c"></div></div><div class="macro-grams" id="macro-c-g">—</div></div>
+          <div class="macro-bar-row"><div class="macro-label">Lipides</div><div class="macro-track"><div class="pbar-fill lime" id="mb-f"></div></div><div class="macro-grams" id="macro-f-g">—</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Choisir une stratégie</div><div class="card-sub">Clique pour changer.</div></div><div class="card-icon">🎯</div></div>
+          <div class="strategy-grid" id="strat-cards"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Projection musculaire</div><div class="card-sub">Modèle McDonald adapté — niveau, sexe, surplus.</div></div><div class="card-icon">📈</div></div>
+          <div class="grid-2" id="proj-cards"></div>
+        </div>
+
+        <div class="ad-slot"><div class="ad-label">Publicité</div><div class="ad-placeholder">Espace AdSense 728×90</div></div>
+        <div class="aff-banner">
+          <div class="aff-text"><strong>🥤 Whey recommandée pour ton profil</strong><span>Isolate haute densité (≥80% protéines) — notre partenaire sélectionné.</span></div>
+          <a href="#" class="btn-aff" rel="noopener sponsored">Voir l'offre →</a>
+        </div>
+
+        <div class="btn-row"><button class="btn btn-secondary" id="btn-c4-back">← Modifier</button><button class="btn btn-primary" id="btn-c4-next">Détail protéines →</button></div>
+      </div>
+
+      <!-- STEP 5 — PROTÉINES -->
+      <div class="step-panel" id="cstep5">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Plan protéique complet</div><div class="card-sub">1.6–2.2g/kg selon profil · Morton et al. (2018).</div></div><div class="card-icon">🧪</div></div>
+          <div class="metrics-grid">
+            <div class="metric-box"><div class="metric-label">Besoin total</div><div class="metric-value"><span id="prot-need">—</span><span class="metric-unit">g/j</span></div></div>
+            <div class="metric-box ice"><div class="metric-label">Via alimentation</div><div class="metric-value"><span id="prot-diet">—</span><span class="metric-unit">g/j</span></div></div>
+            <div class="metric-box"><div class="metric-label">Déficit protéique</div><div class="metric-value"><span id="prot-gap">—</span><span class="metric-unit">g/j</span></div></div>
+            <div class="metric-box gold"><div class="metric-label">Scoops whey/j</div><div class="metric-value"><span id="prot-scoops">—</span><span class="metric-unit">sc.</span></div></div>
+          </div>
+          <div class="pbar-wrap">
+            <div class="pbar-header"><span>Couverture alimentaire</span><span class="pbar-pct" id="prot-pct">—</span></div>
+            <div class="pbar-track"><div class="pbar-fill" id="prot-bar-fill"></div></div>
+          </div>
+          <hr class="card-divider">
+          <div class="card-title" style="font-size:1rem;margin-bottom:4px;">Répartition & timing</div>
+          <div class="card-sub" style="margin-bottom:16px;">Paddon-Jones et al. (2009, 2013)</div>
+          <div style="overflow-x:auto">
+            <table class="log-table"><thead><tr><th>Moment</th><th>Quantité</th><th>Conseil</th></tr></thead><tbody id="timing-body"></tbody></table>
+          </div>
+        </div>
+        <div class="btn-row"><button class="btn btn-secondary" id="btn-c5-back">← Résultats</button><button class="btn btn-ghost" id="btn-print">🖨️ Imprimer</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 2 — BIBLIOTHÈQUE D'EXERCICES
+  ════════════════════════════════════════════ -->
+  <div class="page" id="page-library">
+    <div class="page-container">
+      <div class="page-hero">
+        <div class="page-eyebrow">📚 22 exercices détaillés</div>
+        <h1 class="page-title">Bibliothèque<br><span>d'exercices</span></h1>
+        <p class="page-sub">Filtre par groupe musculaire. Clique sur un exercice pour voir l'exécution étape par étape.</p>
+      </div>
+      <div class="filter-bar" id="muscle-filters"></div>
+      <div class="exo-grid" id="exo-grid"></div>
+      <div class="ad-slot" style="margin-top:32px"><div class="ad-label">Publicité</div><div class="ad-placeholder">Espace AdSense</div></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 3 — GÉNÉRATEUR DE PROGRAMME
+  ════════════════════════════════════════════ -->
+  <div class="page" id="page-program">
+    <div class="page-container">
+      <div class="page-hero">
+        <div class="page-eyebrow">🗓️ 3 templates scientifiques</div>
+        <h1 class="page-title">Générateur de<br><span>programme</span></h1>
+        <p class="page-sub">Full Body, Push/Pull/Legs ou Upper/Lower — adapté à ton niveau et ta fréquence.</p>
+      </div>
+
+      <!-- Étape 1 — Config -->
+      <div class="prog-step-panel active" id="pgstep1">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Configure ton programme</div><div class="card-sub">Le template optimal sera sélectionné automatiquement.</div></div><div class="card-icon">⚙️</div></div>
+          <div class="grid-2" style="gap:20px">
+            <div class="form-group">
+              <label class="field-label">Niveau</label>
+              <div class="pill-group" role="radiogroup">
+                <div class="pill"><input type="radio" name="prog-level" id="pl1" value="beginner" checked><label for="pl1">Débutant</label></div>
+                <div class="pill"><input type="radio" name="prog-level" id="pl2" value="intermediate"><label for="pl2">Intermédiaire</label></div>
+                <div class="pill"><input type="radio" name="prog-level" id="pl3" value="advanced"><label for="pl3">Avancé</label></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="field-label" for="prog-freq">Séances / semaine</label>
+              <select id="prog-freq">
+                <option value="3">3 séances/semaine</option>
+                <option value="4" selected>4 séances/semaine</option>
+                <option value="5">5 séances/semaine</option>
+              </select>
+            </div>
+            <div class="form-group span-2">
+              <label class="field-label">Objectif principal</label>
+              <div class="pill-group" role="radiogroup">
+                <div class="pill"><input type="radio" name="prog-goal" id="pg1" value="mass" checked><label for="pg1">💪 Prise de masse</label></div>
+                <div class="pill"><input type="radio" name="prog-goal" id="pg2" value="strength"><label for="pg2">🏋️ Force</label></div>
+                <div class="pill"><input type="radio" name="prog-goal" id="pg3" value="recomp"><label for="pg3">⚖️ Recomposition</label></div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary btn-lg" id="btn-gen-prog">🗓️ Générer mon programme</button></div>
+        </div>
+      </div>
+
+      <!-- Étape 2 — Résultat -->
+      <div class="prog-step-panel" id="pgstep2">
+        <div class="card card-sm" style="margin-bottom:20px">
+          <div class="card-title" id="prog-result-name">—</div>
+          <div class="card-sub" id="prog-result-desc">—</div>
+        </div>
+        <div id="prog-result"></div>
+        <div class="aff-banner">
+          <div class="aff-text"><strong>📱 Suivi ton programme</strong><span>Utilise l'onglet Suivi pour enregistrer tes charges et voir tes progressions.</span></div>
+          <button class="btn-aff" onclick="APP.goPage('logbook')">Ouvrir le suivi →</button>
+        </div>
+        <div class="btn-row"><button class="btn btn-secondary" id="btn-prog-back">← Modifier</button><button class="btn btn-ghost" onclick="window.print()">🖨️ Imprimer</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 4 — SUIVI DE PROGRESSION
+  ════════════════════════════════════════════ -->
+  <div class="page" id="page-logbook">
+    <div class="page-container">
+      <div class="page-hero">
+        <div class="page-eyebrow">📊 Logbook de progression</div>
+        <h1 class="page-title">Suivi de<br><span>progression</span></h1>
+        <p class="page-sub">Enregistre tes charges, visualise tes records personnels (PR) et suis ta progression dans le temps.</p>
+      </div>
+
+      <!-- Formulaire ajout -->
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Ajouter une série</div><div class="card-sub">Enregistre tes performances après l'entraînement.</div></div><div class="card-icon">➕</div></div>
+        <div class="grid-2" style="gap:16px">
+          <div class="form-group span-2"><label class="field-label" for="log-exo">Exercice</label><select id="log-exo"></select></div>
+          <div class="form-group"><label class="field-label" for="log-weight">Charge (kg)</label><input type="number" id="log-weight" min="0" max="500" step="0.5" placeholder="80" inputmode="decimal"></div>
+          <div class="form-group"><label class="field-label" for="log-reps">Répétitions</label><input type="number" id="log-reps" min="1" max="100" placeholder="10" inputmode="numeric"></div>
+          <div class="form-group"><label class="field-label" for="log-sets">Séries</label><select id="log-sets"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" id="btn-add-log">✓ Enregistrer</button></div>
+      </div>
+
+      <!-- Journal -->
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Historique</div><div class="card-sub">🏆 PR = record personnel sur ce mouvement.</div></div><div class="card-icon">📋</div></div>
+        <div style="overflow-x:auto">
+          <table class="log-table"><thead><tr><th>Date</th><th>Exercice</th><th>Charge</th><th>Volume</th><th></th></tr></thead><tbody id="log-tbody"></tbody></table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 5 — TIMER DE REPOS
+  ════════════════════════════════════════════ -->
+  <div class="page" id="page-timer">
+    <div class="page-container" style="max-width:480px">
+      <div class="page-hero" style="text-align:center">
+        <div class="page-eyebrow">⏱️ Timer de repos</div>
+        <h1 class="page-title" style="text-align:center">Repos<br><span>entre séries</span></h1>
+      </div>
+
+      <div class="timer-widget">
+        <div class="timer-label">Temps restant</div>
+
+        <div class="timer-ring">
+          <svg viewBox="0 0 120 120">
+            <circle class="timer-ring-bg" cx="60" cy="60" r="54"/>
+            <circle class="timer-ring-fill" id="timer-ring-fill" cx="60" cy="60" r="54"/>
+          </svg>
+          <div class="timer-ring-text" id="timer-ring-text">1:30</div>
+        </div>
+
+        <div class="timer-presets">
+          <button class="timer-preset" data-sec="30">30s</button>
+          <button class="timer-preset" data-sec="60">1 min</button>
+          <button class="timer-preset active" data-sec="90">1:30</button>
+          <button class="timer-preset" data-sec="120">2 min</button>
+          <button class="timer-preset" data-sec="180">3 min</button>
+        </div>
+
+        <div class="timer-controls">
+          <button class="btn btn-secondary" id="timer-reset">↺ Reset</button>
+          <button class="btn btn-primary btn-lg" id="timer-start">▶ Démarrer</button>
+        </div>
+      </div>
+
+      <div class="card card-sm" style="margin-top:16px;text-align:center">
+        <div class="card-sub">Temps de repos recommandés :</div>
+        <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;font-size:0.82rem;color:var(--text2)">
+          <span>🏋️ Force &nbsp;— <strong>3–5 min</strong></span>
+          <span>💪 Masse &nbsp;— <strong>1:30–2 min</strong></span>
+          <span>🔥 Cardio — <strong>30–60s</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-copy">© 2025 MuscleOS — Calculateur scientifique de musculation</div>
+    <nav class="footer-links">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">Contact</a>
+    </nav>
+  </footer>
+
+</div><!-- /site-wrapper -->
+
+<!-- ══ MODAL EXERCICE ══ -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal" id="exo-modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Exercice</div>
+      <button class="modal-close" id="modal-close" aria-label="Fermer">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ══ MOBILE NAV ══ -->
+<nav class="mobile-nav" aria-label="Navigation mobile">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-btn active" data-page="calc">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 5h6M5 8h6M5 11h3"/></svg>
+      <span>Calcul</span>
+    </button>
+    <button class="mobile-nav-btn" data-page="library">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>
+      <span>Exercices</span>
+    </button>
+    <button class="mobile-nav-btn" data-page="program">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10M3 8h7M3 12h5"/></svg>
+      <span>Programme</span>
+    </button>
+    <button class="mobile-nav-btn" data-page="logbook">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M6 6h4M6 9h4M6 12h2"/></svg>
+      <span>Suivi</span>
+    </button>
+    <button class="mobile-nav-btn" data-page="timer">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="9" r="5"/><path d="M8 6v3M6 2h4"/></svg>
+      <span>Timer</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Scripts dans le bon ordre -->
+<script src="js/algorithms.js" defer></script>
+<script src="js/data.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
