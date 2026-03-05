@@ -1,8 +1,7 @@
 /**
  * MassBuilder PRO — Algorithmes Métaboliques
  * Module: algorithms.js
- * 
- * Sources scientifiques :
+ * * Sources scientifiques :
  * - Mifflin MD et al. (1990) Am J Clin Nutr, 51:241-7
  * - Roza AM, Shizgal HM (1984) Am J Clin Nutr, 40:168-82
  * - Katch-McArdle (1996) Exercise Physiology
@@ -49,7 +48,7 @@ const ALGO = (() => {
    * @param {number} bf Pourcentage masse grasse
    */
   function bmrKatch(w, bf) {
-    const lbm = w * (1 - bf / 100);
+    const lbm = w * (1 - (bf || 20) / 100);
     return 370 + 21.6 * lbm;
   }
 
@@ -78,8 +77,7 @@ const ALGO = (() => {
    * TDEE = BMR × NAP + correction EPOC estimée
    * EPOC (Excess Post-exercise Oxygen Consumption) = 6-15% 
    * de la dépense d'entraînement sur 24-48h post-séance
-   * 
-   * @param {number} bmr         Métabolisme de base
+   * * @param {number} bmr         Métabolisme de base
    * @param {number} nap         Coefficient d'activité (1.2 – 1.9)
    * @param {number} sessions    Séances/semaine
    * @param {number} duration    Durée séance (min)
@@ -91,7 +89,6 @@ const ALGO = (() => {
 
     // Dépense calorique par séance (MET musculation ≈ 5 METs, ajusté poids)
     const metBase = 5.0;
-    const hourlyExpense = metBase * (weight * 3.5 * 5) / 1000; // ml O2/min → kcal
     const sessionKcal = (duration / 60) * metBase * weight * 3.5 * 5 / 1000 * 60;
 
     // EPOC moyen = 8% de la dépense workout
@@ -109,8 +106,7 @@ const ALGO = (() => {
    * Surplus adaptatif selon objectif + profil
    * Pénalité si BF élevé (graisse supplémentaire préférentielle)
    * Réduction chez les avancés (sensibilité anabolique diminuée)
-   * 
-   * @returns {number} Surplus calorique (kcal/j)
+   * * @returns {number} Surplus calorique (kcal/j)
    */
   function calcSurplus(goal, level, bodyfat, sex) {
     const baseMap = {
@@ -134,8 +130,11 @@ const ALGO = (() => {
     // Femmes : surplus légèrement réduit (composition différente)
     const sexFactor = sex === 'female' ? 0.88 : 1.0;
 
-    const base = baseMap[goal].mid;
-    return Math.round(base * levelFactor[level] * bfFactor * sexFactor);
+    // Fallbacks de sécurité si 'goal' ou 'level' sont indéfinis
+    const base = baseMap[goal]?.mid || 350; 
+    const lvlFact = levelFactor[level] || 1.00;
+
+    return Math.round(base * lvlFact * bfFactor * sexFactor);
   }
 
   /* ─────────────────────────────────────────────
@@ -145,10 +144,8 @@ const ALGO = (() => {
   /**
    * Ratio protéique selon méta-analyse Morton (2018)
    * Range 1.6 – 2.2g/kg selon niveau, objectif, BF
-   * 
-   * Si BF > 25%, calcul sur masse maigre × 1.15 (protège LBM)
-   * 
-   * @returns {number} Besoin protéique (g/j)
+   * * Si BF > 25%, calcul sur masse maigre × 1.15 (protège LBM)
+   * * @returns {number} Besoin protéique (g/j)
    */
   function calcProteinNeed(weight, level, goal, bodyfat) {
     const ratioMatrix = {
@@ -158,7 +155,8 @@ const ALGO = (() => {
       elite:        { lean: 2.0, standard: 2.2,  agressive: 2.2  },
     };
 
-    const ratio = ratioMatrix[level][goal];
+    // Fallback de sécurité : ratio moyen de 1.8 si non trouvé
+    const ratio = ratioMatrix[level]?.[goal] || 1.8;
 
     // Utiliser masse maigre ajustée si obésité
     let effectiveWeight = weight;
@@ -180,10 +178,8 @@ const ALGO = (() => {
    * Intermediate: 0.45–0.55 kg/mois
    * Advanced: 0.2–0.3 kg/mois
    * Elite: 0.08–0.15 kg/mois
-   * 
-   * Ajusté par : sexe, surplus, entraînement
-   * 
-   * @returns {number} Gain mensuel musculaire (kg)
+   * * Ajusté par : sexe, surplus, entraînement
+   * * @returns {number} Gain mensuel musculaire (kg)
    */
   function calcMonthlyMuscleGain(level, sex, surplus, sessionsPerWeek) {
     const basePotential = {
@@ -207,7 +203,10 @@ const ALGO = (() => {
     else if (sessionsPerWeek <= 3) volMult = 0.85;
     else if (sessionsPerWeek >= 6) volMult = 1.05;
 
-    const gain = basePotential[level] * sexMult * surplusMult * volMult;
+    // Fallback de sécurité
+    const basePot = basePotential[level] || 0.50;
+
+    const gain = basePot * sexMult * surplusMult * volMult;
     return +gain.toFixed(3);
   }
 
@@ -237,11 +236,12 @@ const ALGO = (() => {
   function calcMacros(targetCal, proteinNeed) {
     const pCal = proteinNeed * 4;
     const fCal = Math.round(targetCal * 0.25);
+    // Sécurité avec Math.max pour éviter les glucides négatifs
     const cCal = Math.max(0, targetCal - pCal - fCal);
 
     return {
-      protein: proteinNeed,
-      fat:     Math.round(fCal / 9),
+      protein: Math.max(0, proteinNeed),
+      fat:     Math.max(0, Math.round(fCal / 9)),
       carbs:   Math.round(cCal / 4),
     };
   }
