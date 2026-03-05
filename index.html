@@ -261,7 +261,7 @@
   <div class="page" id="page-library">
     <div class="page-container">
       <div class="page-hero">
-        <div class="page-eyebrow">📚 22 exercices détaillés</div>
+        <div class="page-eyebrow">📚 46 exercices détaillés</div>
         <h1 class="page-title">Bibliothèque<br><span>d'exercices</span></h1>
         <p class="page-sub">Filtre par groupe musculaire. Clique sur un exercice pour voir l'exécution étape par étape.</p>
       </div>
@@ -333,9 +333,28 @@
       <div class="page-hero">
         <div class="page-eyebrow">📊 Logbook de progression</div>
         <h1 class="page-title">Suivi de<br><span>progression</span></h1>
-        <p class="page-sub">Enregistre tes charges, visualise tes records personnels (PR) et suis ta progression dans le temps.</p>
+        <p class="page-sub">Enregistre tes charges, visualise tes records personnels et suis ta courbe de progression.</p>
       </div>
 
+      <!-- Stats rapides -->
+      <div class="stat-cards-grid" id="log-stats"></div>
+
+      <!-- Graphique -->
+      <div class="chart-wrap">
+        <div class="chart-header">
+          <div class="chart-title">📈 Progression des charges</div>
+          <select class="chart-sel" id="chart-exo-sel">
+            <option value="">Tous les exercices</option>
+          </select>
+        </div>
+        <canvas id="prog-chart" width="900" height="220"></canvas>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="legend-dot" style="background:var(--fire)"></div>Charge (kg)</div>
+          <div class="chart-legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Record personnel (PR)</div>
+        </div>
+      </div>
+
+      <!-- Formulaire ajout -->
       <div class="card">
         <div class="card-header"><div><div class="card-title">Ajouter une série</div><div class="card-sub">Enregistre tes performances après l'entraînement.</div></div><div class="card-icon">➕</div></div>
         <div class="grid-2" style="gap:16px">
@@ -347,8 +366,9 @@
         <div class="btn-row"><button class="btn btn-primary" id="btn-add-log">✓ Enregistrer</button></div>
       </div>
 
+      <!-- Historique -->
       <div class="card">
-        <div class="card-header"><div><div class="card-title">Historique</div><div class="card-sub">🏆 PR = record personnel sur ce mouvement.</div></div><div class="card-icon">📋</div></div>
+        <div class="card-header"><div><div class="card-title">Historique</div><div class="card-sub">🏆 PR = record personnel sur cet exercice (charge max).</div></div><div class="card-icon">📋</div></div>
         <div style="overflow-x:auto">
           <table class="log-table"><thead><tr><th>Date</th><th>Exercice</th><th>Charge</th><th>Volume</th><th></th></tr></thead><tbody id="log-tbody"></tbody></table>
         </div>

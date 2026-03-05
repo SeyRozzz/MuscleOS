@@ -343,6 +343,156 @@ const DATA = (() => {
         { t:'Contraction', d:'Contracte les abdos fort en bas. Remonte lentement.' },
       ],
       tips:'Supérieur aux crunchs au sol car tu peux ajouter de la résistance et progresser avec du poids.' },
+
+    // ── ABDOMINAUX SUPPLÉMENTAIRES ──────────────────────────
+    { id:'e33', name:'Mountain Climbers', muscle:'abs', icon:'🤸',
+      secondary:['legs'], difficulty:'debutant',
+      equipment:'Poids de corps', sets:'3', reps:'30–45 sec', rest:45,
+      steps:[
+        { t:'Position', d:'Position de pompe, bras tendus, corps en ligne droite. Poignets sous les épaules.' },
+        { t:'Mouvement', d:'Ramène alternativement chaque genou vers la poitrine en gardant les hanches basses.' },
+        { t:'Rythme', d:'Commence lentement pour maîtriser la technique, puis accélère progressivement. Expire à chaque genou rentré.' },
+      ],
+      tips:'Exercice cardio-abdominal excellent pour la densité musculaire et la dépense calorique.' },
+
+    { id:'e34', name:'Crunch inversé', muscle:'abs', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Poids de corps / sol', sets:'3–4', reps:'15–20', rest:60,
+      steps:[
+        { t:'Position', d:'Allongé sur le dos, jambes tendues vers le plafond, perpendiculaires au sol. Mains sous les fessiers.' },
+        { t:'Mouvement', d:'Soulève les hanches du sol en poussant les pieds vers le plafond. Contracte les abdos bas.' },
+        { t:'Descente', d:'Redescends les hanches sans que les jambes ne tombent en avant. Garde le contrôle.' },
+      ],
+      tips:'Cible spécifiquement la partie basse des abdominaux, souvent négligée par les crunchs classiques.' },
+
+    { id:'e35', name:'Russian Twist', muscle:'abs', icon:'🤸',
+      secondary:[], difficulty:'debutant',
+      equipment:'Poids de corps / disque', sets:'3', reps:'20–30 rotations', rest:60,
+      steps:[
+        { t:'Position', d:'Assis au sol, jambes fléchies légèrement levées (ou posées). Dos incliné à ~45°.' },
+        { t:'Rotation', d:'Tourne le buste de gauche à droite en touchant le sol de chaque côté. Garde le ventre rentré.' },
+        { t:'Progression', d:'Ajoute un disque, une bouteille d\'eau ou un haltère pour augmenter la résistance.' },
+      ],
+      tips:'Excellent pour les obliques. Garde les épaules basses et le mouvement vient de la taille, pas des bras.' },
+
+    // ── MOLLETS ──────────────────────────────────────────────
+    { id:'e36', name:'Mollets debout', muscle:'legs', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Poids de corps / haltères / machine', sets:'4', reps:'15–25', rest:60,
+      steps:[
+        { t:'Position', d:'Debout sur le bord d\'une marche ou au sol. Pointe des pieds vers l\'avant. Haltères ou barre pour ajouter du poids.' },
+        { t:'Montée', d:'Monte sur la pointe des pieds le plus haut possible. Contracte fort les mollets en haut.' },
+        { t:'Descente', d:'Descends lentement sous la ligne du sol pour maximiser l\'étirement (si sur une marche). Tempo 2-0-2.' },
+      ],
+      tips:'Les mollets récupèrent vite — vise beaucoup de volume (15–25 reps) et un tempo lent pour les fatiguer vraiment.' },
+
+    // ── DOS SUPPLÉMENTAIRES ──────────────────────────────────
+    { id:'e37', name:'Hyperextension', muscle:'back', icon:'🤸',
+      secondary:['glutes'], difficulty:'debutant',
+      equipment:'Banc à lombaires / sol', sets:'3', reps:'12–15', rest:75,
+      steps:[
+        { t:'Installation', d:'Sur le banc à lombaires, hanches calées sur le pad. Corps à 45° vers le bas, bras croisés sur la poitrine.' },
+        { t:'Montée', d:'Remonte le buste jusqu\'à alignement parfait hanches-dos. Contracte les lombaires et les fessiers en haut.' },
+        { t:'Descente', d:'Descends lentement. Ne dépasse pas la ligne neutre pour protéger le bas du dos.' },
+      ],
+      tips:'Indispensable pour renforcer les lombaires et prévenir les blessures. Commence sans poids.' },
+
+    { id:'e38', name:'Good Morning', muscle:'back', icon:'🏋️',
+      secondary:['glutes','legs'], difficulty:'intermediaire',
+      equipment:'Barre légère', sets:'3', reps:'10–12', rest:90,
+      steps:[
+        { t:'Position', d:'Barre sur les trapèzes (comme pour le squat), pieds à largeur des épaules. Genoux légèrement fléchis.' },
+        { t:'Flexion', d:'Penche le buste vers l\'avant en poussant les hanches vers l\'arrière (hip hinge). Dos reste plat.' },
+        { t:'Retour', d:'Remonte en poussant les hanches vers l\'avant. Ce sont les ischio-jambiers qui font le travail.' },
+      ],
+      tips:'Commence avec une barre vide. Excellent pour la chaîne postérieure et la proprioception lombaire.' },
+
+    // ── PECTORAUX SUPPLÉMENTAIRES ────────────────────────────
+    { id:'e39', name:'Pompes', muscle:'chest', icon:'🤸',
+      secondary:['triceps','shoulders'], difficulty:'debutant',
+      equipment:'Poids de corps', sets:'3–5', reps:'Max / 15–25', rest:75,
+      steps:[
+        { t:'Position', d:'Mains au sol légèrement plus larges que les épaules. Corps en ligne droite, abdos contractés.' },
+        { t:'Descente', d:'Descends jusqu\'à effleurer le sol avec la poitrine. Coudes à 45° du corps, pas écartés à 90°.' },
+        { t:'Poussée', d:'Remonte en explosant vers le haut. Pour plus de difficulté : pieds surélevés (haut pecs) ou lest.' },
+      ],
+      tips:'Le mouvement parfait pour voyager ou s\'échauffer. Les pompes déclinées (pieds en hauteur) ciblent le haut des pecs.' },
+
+    // ── JAMBES SUPPLÉMENTAIRES ───────────────────────────────
+    { id:'e40', name:'Squat gobelet', muscle:'legs', icon:'🤸',
+      secondary:['glutes','abs'], difficulty:'debutant',
+      equipment:'Haltère ou kettlebell', sets:'3', reps:'12–15', rest:75,
+      steps:[
+        { t:'Prise', d:'Tiens un haltère ou kettlebell à deux mains contre ta poitrine, coudes pointés vers le bas.' },
+        { t:'Descente', d:'Descends en squat profond, les coudes passant à l\'intérieur des genoux. Talon au sol.' },
+        { t:'Remontée', d:'Pousse à travers les talons. Le contrepoids devant aide à rester bien droit.' },
+      ],
+      tips:'Parfait pour apprendre la mécanique du squat. Le poids devant améliore naturellement la posture.' },
+
+    { id:'e41', name:'Leg Curl couché', muscle:'legs', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Machine leg curl', sets:'3–4', reps:'12–15', rest:75,
+      steps:[
+        { t:'Installation', d:'Allongé face vers le bas sur la machine. Le pad repose juste au-dessus des talons.' },
+        { t:'Flexion', d:'Fléchis les genoux pour ramener les talons vers les fesses. Contracte fort les ischio-jambiers.' },
+        { t:'Descente', d:'Redescends lentement (3 sec). Ne bascule pas les hanches pour aider.' },
+      ],
+      tips:'Isole parfaitement les ischio-jambiers. Essentiels pour équilibrer le développement avec les quadriceps.' },
+
+    // ── ÉPAULES SUPPLÉMENTAIRES ──────────────────────────────
+    { id:'e42', name:'Shrugs haltères', muscle:'shoulders', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Haltères', sets:'3–4', reps:'15–20', rest:60,
+      steps:[
+        { t:'Position', d:'Debout, haltères le long du corps, bras tendus. Dos droit, regard devant.' },
+        { t:'Haussement', d:'Monte les épaules vers les oreilles le plus haut possible. Tiens 1 sec en haut.' },
+        { t:'Descente', d:'Redescends lentement. Ne tourne pas les épaules — mouvement purement vertical.' },
+      ],
+      tips:'Cible les trapèzes supérieurs. Pour les trapèzes moyens et inférieurs, préfère les face pulls et rowing.' },
+
+    { id:'e43', name:'Élévations frontales', muscle:'shoulders', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Haltères / barre', sets:'3', reps:'12–15', rest:60,
+      steps:[
+        { t:'Position', d:'Debout, haltères devant les cuisses en prise pronation (paumes vers le bas).' },
+        { t:'Élévation', d:'Monte les bras devant toi jusqu\'à hauteur des épaules. Garde les coudes légèrement fléchis.' },
+        { t:'Descente', d:'Redescends lentement. Ne balance pas le corps pour aider.' },
+      ],
+      tips:'Cible les deltoïdes antérieurs. À utiliser avec modération — déjà bien travaillés par les développés.' },
+
+    // ── BICEPS SUPPLÉMENTAIRES ───────────────────────────────
+    { id:'e44', name:'Curl concentration', muscle:'biceps', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Haltère', sets:'3', reps:'12–15 par bras', rest:60,
+      steps:[
+        { t:'Position', d:'Assis sur un banc, jambes écartées. Coude calé contre l\'intérieur de la cuisse. Haltère dans la main.' },
+        { t:'Flexion', d:'Monte l\'haltère vers l\'épaule en contractant fort le biceps. Tourne légèrement le poignet vers l\'extérieur.' },
+        { t:'Contraction', d:'Tiens 1 sec en haut en serrant fort. Descends lentement jusqu\'à extension complète.' },
+      ],
+      tips:'Arnold considérait ce mouvement comme le meilleur pour le pic du biceps. L\'isolation est maximale.' },
+
+    // ── TRICEPS SUPPLÉMENTAIRES ──────────────────────────────
+    { id:'e45', name:'Pompes diamant', muscle:'triceps', icon:'🤸',
+      secondary:['chest'], difficulty:'intermediaire',
+      equipment:'Poids de corps', sets:'3–4', reps:'10–20', rest:75,
+      steps:[
+        { t:'Position', d:'Mains au sol, pouces et index se touchant pour former un diamant sous la poitrine.' },
+        { t:'Descente', d:'Descends en gardant les coudes proches du corps. La poitrine descend vers les mains.' },
+        { t:'Poussée', d:'Remonte en poussant fort. Les triceps font l\'essentiel du travail.' },
+      ],
+      tips:'Variante des pompes qui transfère le travail des pectoraux vers les triceps. Parfait sans matériel.' },
+
+    // ── FESSIERS SUPPLÉMENTAIRES ─────────────────────────────
+    { id:'e46', name:'Abduction hanche', muscle:'glutes', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Machine / élastique', sets:'3–4', reps:'15–20', rest:60,
+      steps:[
+        { t:'Position', d:'Debout ou assis à la machine. Élastique autour des genoux pour la version sol.' },
+        { t:'Abduction', d:'Écarte la jambe (ou les deux genoux) vers l\'extérieur contre la résistance. Contracte les fessiers.' },
+        { t:'Retour', d:'Ramène lentement. Ne laisse pas les genoux tomber vers l\'intérieur entre les répétitions.' },
+      ],
+      tips:'Cible le moyen fessier, crucial pour la stabilité des hanches et un aspect arrondi du fessier.' },
+
   ];
 
   /* ═══════════════════════════════════════════════════════════

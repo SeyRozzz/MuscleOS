@@ -524,6 +524,7 @@ const APP = (() => {
 
     state.logbook.unshift(entry);
     saveLogbook();
+    initChartSelect();
     renderLogbook();
     toast('Séance enregistrée !', 'ok');
 
@@ -542,19 +543,19 @@ const APP = (() => {
 
     if (!state.logbook.length) {
       tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text3)">Aucune séance enregistrée</td></tr>`;
+      renderStatsCards();
+      renderChart();
       return;
     }
 
-    // Calculer les PRs par exercice
+    // PRs par exercice (basé sur charge max)
     const prs = {};
     state.logbook.forEach(e => {
-      const vol = e.weight * e.reps;
-      if (!prs[e.exoId] || vol > prs[e.exoId]) prs[e.exoId] = vol;
+      if (!prs[e.exoId] || e.weight > prs[e.exoId]) prs[e.exoId] = e.weight;
     });
 
-    tbody.innerHTML = state.logbook.slice(0, 50).map(e => {
-      const vol = e.weight * e.reps;
-      const isPR = prs[e.exoId] === vol;
+    tbody.innerHTML = state.logbook.slice(0, 60).map(e => {
+      const isPR = prs[e.exoId] === e.weight;
       return `
         <tr>
           <td>${esc(e.date)}</td>
@@ -566,6 +567,190 @@ const APP = (() => {
           </td>
         </tr>`;
     }).join('');
+
+    renderStatsCards();
+    renderChart();
+  }
+
+  function renderStatsCards() {
+    const el = document.getElementById('log-stats');
+    if (!el) return;
+
+    const log = state.logbook;
+    if (!log.length) {
+      el.innerHTML = '';
+      return;
+    }
+
+    const totalSessions = log.length;
+    const totalVolume   = log.reduce((acc, e) => acc + e.weight * e.reps * e.sets, 0);
+    const exercises     = new Set(log.map(e => e.exoId)).size;
+
+    // PR total (charge max toutes catégories)
+    const topPR = log.reduce((best, e) => e.weight > best ? e.weight : best, 0);
+    const topPRName = log.find(e => e.weight === topPR)?.exoName || '—';
+
+    el.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-icon">🏋️</div>
+        <div class="stat-value">${totalSessions}</div>
+        <div class="stat-label">Séries enregistrées</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-value">${(totalVolume/1000).toFixed(1)}t</div>
+        <div class="stat-label">Volume total soulevé</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-value">${exercises}</div>
+        <div class="stat-label">Exercices différents</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value">${topPR} kg</div>
+        <div class="stat-label">Meilleur PR — ${esc(topPRName)}</div>
+      </div>
+    `;
+  }
+
+  function renderChart() {
+    const canvas = document.getElementById('prog-chart');
+    const sel    = document.getElementById('chart-exo-sel');
+    if (!canvas || !sel) return;
+
+    const exoId = sel.value;
+    const ctx   = canvas.getContext('2d');
+
+    // Effacer
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const filtered = state.logbook
+      .filter(e => !exoId || e.exoId === exoId)
+      .slice()
+      .reverse()
+      .slice(-20); // 20 dernières entrées
+
+    if (!filtered.length) {
+      ctx.fillStyle = '#4a5858';
+      ctx.font = '14px DM Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Pas encore de données pour cet exercice', canvas.width/2, canvas.height/2);
+      return;
+    }
+
+    // Dimensions
+    const W = canvas.width, H = canvas.height;
+    const padL = 52, padR = 20, padT = 20, padB = 48;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+
+    const values = filtered.map(e => e.weight);
+    const labels = filtered.map(e => e.date);
+    const minVal = Math.min(...values) * 0.9;
+    const maxVal = Math.max(...values) * 1.05;
+    const range  = maxVal - minVal || 1;
+
+    const toX = i => padL + (i / (filtered.length - 1 || 1)) * chartW;
+    const toY = v => padT + chartH - ((v - minVal) / range) * chartH;
+
+    // Grille
+    ctx.strokeStyle = '#222626';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = padT + (chartH / 4) * i;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + chartW, y); ctx.stroke();
+      const val = maxVal - (range / 4) * i;
+      ctx.fillStyle = '#4a5858';
+      ctx.font = '11px DM Sans, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(val.toFixed(0) + 'kg', padL - 6, y + 4);
+    }
+
+    // Aire sous la courbe (gradient)
+    const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
+    grad.addColorStop(0, 'rgba(249,115,22,0.25)');
+    grad.addColorStop(1, 'rgba(249,115,22,0.0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(toX(0), toY(values[0]));
+    filtered.forEach((e, i) => {
+      if (i === 0) return;
+      // Courbe lisse (bezier)
+      const x0 = toX(i-1), y0 = toY(values[i-1]);
+      const x1 = toX(i),   y1 = toY(values[i]);
+      const cx  = (x0+x1)/2;
+      ctx.bezierCurveTo(cx, y0, cx, y1, x1, y1);
+    });
+    ctx.lineTo(toX(filtered.length-1), padT+chartH);
+    ctx.lineTo(toX(0), padT+chartH);
+    ctx.closePath(); ctx.fill();
+
+    // Ligne principale
+    ctx.strokeStyle = '#f97316';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(toX(0), toY(values[0]));
+    filtered.forEach((e, i) => {
+      if (i === 0) return;
+      const x0 = toX(i-1), y0 = toY(values[i-1]);
+      const x1 = toX(i),   y1 = toY(values[i]);
+      const cx  = (x0+x1)/2;
+      ctx.bezierCurveTo(cx, y0, cx, y1, x1, y1);
+    });
+    ctx.stroke();
+
+    // Points
+    filtered.forEach((e, i) => {
+      const x = toX(i), y = toY(values[i]);
+      // PR = gold, sinon fire
+      const isPR = values[i] === Math.max(...values);
+      ctx.beginPath();
+      ctx.arc(x, y, isPR ? 6 : 4, 0, Math.PI * 2);
+      ctx.fillStyle = isPR ? '#fbbf24' : '#f97316';
+      ctx.fill();
+      ctx.strokeStyle = '#080909';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Label PR
+      if (isPR) {
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 11px DM Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('PR', x, y - 12);
+      }
+    });
+
+    // Labels X (toutes les N entrées)
+    const step = Math.ceil(filtered.length / 5);
+    ctx.fillStyle = '#4a5858';
+    ctx.font = '10px DM Sans, sans-serif';
+    ctx.textAlign = 'center';
+    filtered.forEach((e, i) => {
+      if (i % step !== 0 && i !== filtered.length - 1) return;
+      ctx.fillText(labels[i], toX(i), H - 8);
+    });
+  }
+
+  function updateChart() {
+    renderChart();
+  }
+
+  function initChartSelect() {
+    const sel = document.getElementById('chart-exo-sel');
+    if (!sel) return;
+    // Reprend les exercices du logbook
+    const seen = new Set();
+    const opts = [{ id:'', name:'Tous les exercices' }];
+    state.logbook.forEach(e => {
+      if (!seen.has(e.exoId)) { seen.add(e.exoId); opts.push({ id: e.exoId, name: e.exoName }); }
+    });
+    const prev = sel.value;
+    sel.innerHTML = opts.map(o => `<option value="${esc(o.id)}">${esc(o.name)}</option>`).join('');
+    sel.value = prev;
+    sel.addEventListener('change', updateChart);
   }
 
   function initLogExoSelect() {
@@ -714,6 +899,7 @@ const APP = (() => {
     // Suivi
     loadLogbook();
     initLogExoSelect();
+    initChartSelect();
     renderLogbook();
     bind('btn-add-log', addLog);
 
@@ -740,6 +926,6 @@ const APP = (() => {
   else init();
 
   // API publique
-  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer };
+  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart };
 
 })();
