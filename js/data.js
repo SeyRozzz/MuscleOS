@@ -51,6 +51,16 @@ const DATA = (() => {
       ],
       tips:'L\'inclinaison du tronc vers l\'avant est essentielle. Si tu restes droit, ce sont les triceps qui travaillent.' },
 
+    { id:'e23', name:'Développé incliné barre', muscle:'chest', icon:'🏋️',
+      secondary:['shoulders','triceps'], difficulty:'intermediaire',
+      equipment:'Barre + Banc incliné', sets:'3–4', reps:'8–12', rest:120,
+      steps:[
+        { t:'Position', d:'Banc incliné à 30°. Allonge-toi et saisis la barre un peu plus large que les épaules.' },
+        { t:'Descente', d:'Descends la barre de manière contrôlée jusqu\'au haut de tes pectoraux (sous les clavicules).' },
+        { t:'Poussée', d:'Pousse la barre vers le haut jusqu\'à l\'extension des bras sans décoller les épaules du banc.' },
+      ],
+      tips:'Garde les omoplates bien resserrées pour protéger tes épaules et cibler le haut des pectoraux.' },
+
     // ── DOS ────────────────────────────────────────────────
     { id:'e05', name:'Soulevé de terre', muscle:'back', icon:'🏋️',
       secondary:['legs','glutes','biceps'], difficulty:'avance',
@@ -95,6 +105,26 @@ const DATA = (() => {
       ],
       tips:'Parfait pour apprendre le mouvement de traction. Évite de tirer derrière la nuque, c\'est inutile et risqué.' },
 
+    { id:'e24', name:'Rowing haltère unilatéral', muscle:'back', icon:'💪',
+      secondary:['biceps'], difficulty:'debutant',
+      equipment:'Haltère + Banc', sets:'3', reps:'10–12', rest:60,
+      steps:[
+        { t:'Position', d:'Un genou et une main posés sur un banc horizontal. Dos plat, parallèle au sol.' },
+        { t:'Tirage', d:'Tire l\'haltère vers ta hanche en gardant le coude près du corps.' },
+        { t:'Contraction', d:'Resserre l\'omoplate en haut du mouvement. Descends en contrôlant jusqu\'à l\'étirement complet.' },
+      ],
+      tips:'Idéal pour corriger les déséquilibres de force entre le côté gauche et le côté droit.' },
+
+    { id:'e25', name:'Tirage horizontal poulie', muscle:'back', icon:'💪',
+      secondary:['biceps'], difficulty:'debutant',
+      equipment:'Poulie basse + triangle', sets:'3–4', reps:'10–15', rest:75,
+      steps:[
+        { t:'Position', d:'Assis face à la poulie, pieds calés, genoux légèrement fléchis. Garde le buste bien droit.' },
+        { t:'Tirage', d:'Tire la poignée vers le nombril en tirant les coudes vers l\'arrière.' },
+        { t:'Retour', d:'Raccompagne la charge lentement en laissant les épaules partir légèrement vers l\'avant pour étirer le dos.' },
+      ],
+      tips:'Ne te balance pas d\'avant en arrière. Le mouvement doit venir du dos et des bras.' },
+
     // ── ÉPAULES ────────────────────────────────────────────
     { id:'e09', name:'Développé militaire', muscle:'shoulders', icon:'🏋️',
       secondary:['triceps'], difficulty:'intermediaire',
@@ -127,6 +157,26 @@ const DATA = (() => {
       ],
       tips:'Exercice indispensable pour la santé des épaules. Contre-équilibre les mouvements de presse. À faire à chaque séance épaules.' },
 
+    { id:'e26', name:'Développé Arnold', muscle:'shoulders', icon:'💪',
+      secondary:['triceps'], difficulty:'intermediaire',
+      equipment:'Haltères', sets:'3', reps:'10–12', rest:90,
+      steps:[
+        { t:'Départ', d:'Assis, haltères devant le visage, paumes tournées vers toi (pronation inversée).' },
+        { t:'Poussée', d:'Pousse vers le haut tout en effectuant une rotation des poignets.' },
+        { t:'Arrivée', d:'En haut, les bras sont tendus et les paumes sont face à l\'avant. Fais le mouvement inverse à la descente.' },
+      ],
+      tips:'Excellent pour solliciter simultanément l\'avant et le faisceau latéral de l\'épaule.' },
+
+    { id:'e27', name:'Oiseau aux haltères', muscle:'shoulders', icon:'💪',
+      secondary:['back'], difficulty:'debutant',
+      equipment:'Haltères', sets:'3–4', reps:'15–20', rest:60,
+      steps:[
+        { t:'Position', d:'Buste penché en avant (presque parallèle au sol), genoux légèrement fléchis. Haltères pendants.' },
+        { t:'Élévation', d:'Ouvre les bras vers l\'extérieur en gardant une légère flexion des coudes.' },
+        { t:'Contraction', d:'Resserre les omoplates en fin de mouvement et redescends en contrôlant.' },
+      ],
+      tips:'Cible parfaitement l\'arrière de l\'épaule (deltoïde postérieur). Reste bien penché pour ne pas utiliser le dos.' },
+
     // ── BICEPS ─────────────────────────────────────────────
     { id:'e12', name:'Curl barre', muscle:'biceps', icon:'💪',
       secondary:[], difficulty:'debutant',
@@ -148,6 +198,26 @@ const DATA = (() => {
       ],
       tips:'Travaille davantage le brachial et le brachio-radial. Excellent pour l\'épaisseur du bras.' },
 
+    { id:'e28', name:'Curl incliné haltères', muscle:'biceps', icon:'💪',
+      secondary:[], difficulty:'intermediaire',
+      equipment:'Haltères + Banc incliné', sets:'3', reps:'10–12', rest:75,
+      steps:[
+        { t:'Position', d:'Assis sur un banc incliné (45-60°), bras ballants vers le sol.' },
+        { t:'Flexion', d:'Fléchis les coudes pour monter les haltères tout en gardant les coudes pointés vers le sol.' },
+        { t:'Descente', d:'Descends lentement pour bien ressentir l\'étirement du biceps en bas du mouvement.' },
+      ],
+      tips:'Cet exercice place le biceps dans une position d\'étirement maximale, idéal pour l\'hypertrophie.' },
+
+    { id:'e29', name:'Curl pupitre (Preacher)', muscle:'biceps', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Banc pupitre + Barre', sets:'3', reps:'10–12', rest:75,
+      steps:[
+        { t:'Installation', d:'Assis au pupitre, aisselles bien calées sur le haut du support. Bras parallèles.' },
+        { t:'Mouvement', d:'Remonte la barre vers tes épaules en contractant fort les biceps.' },
+        { t:'Descente', d:'Descends jusqu\'à tendre presque complètement les bras, mais garde une légère flexion pour éviter de blesser le tendon.' },
+      ],
+      tips:'Impossible de tricher sur ce mouvement. Parfait pour l\'isolation pure du biceps.' },
+
     // ── TRICEPS ────────────────────────────────────────────
     { id:'e14', name:'Dips triceps', muscle:'triceps', icon:'🤸',
       secondary:['chest'], difficulty:'intermediaire',
@@ -168,6 +238,26 @@ const DATA = (() => {
         { t:'Retour', d:'Remonte doucement jusqu\'à 90° de flexion. Garde le contrôle.' },
       ],
       tips:'Idéal en fin de séance pour finir les triceps avec du volume. Parfait pour apprendre l\'isolation.' },
+
+    { id:'e30', name:'Extension au-dessus de la tête', muscle:'triceps', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Haltère ou Poulie', sets:'3', reps:'12–15', rest:75,
+      steps:[
+        { t:'Position', d:'Assis ou debout, tiens un haltère à deux mains derrière la nuque.' },
+        { t:'Mouvement', d:'Tends les bras vers le haut en gardant les coudes proches des oreilles.' },
+        { t:'Descente', d:'Descends l\'haltère derrière ta tête en contrôlant pour bien étirer les triceps.' },
+      ],
+      tips:'Cible parfaitement la longue portion du triceps, responsable du volume du bras.' },
+
+    { id:'e31', name:'Barre au front (Skullcrushers)', muscle:'triceps', icon:'🏋️',
+      secondary:[], difficulty:'intermediaire',
+      equipment:'Barre EZ + Banc', sets:'3–4', reps:'10–12', rest:90,
+      steps:[
+        { t:'Position', d:'Allongé sur le banc, bras tendus vers le plafond avec la barre EZ.' },
+        { t:'Descente', d:'Fléchis les coudes pour amener la barre juste au-dessus de ton front (ou derrière ta tête).' },
+        { t:'Poussée', d:'Remonte la barre à la position de départ en contractant fort les triceps.' },
+      ],
+      tips:'Garde tes coudes fixes et pointés vers le plafond. Ne les laisse pas s\'écarter vers l\'extérieur.' },
 
     // ── JAMBES ─────────────────────────────────────────────
     { id:'e16', name:'Squat', muscle:'legs', icon:'🏋️',
@@ -200,6 +290,16 @@ const DATA = (() => {
         { t:'Remontée', d:'Pousse sur le talon du pied avant pour revenir. Ou avance et recommence (fentes marchées).' },
       ],
       tips:'Exercice unilatéral excellent pour corriger les déséquilibres. Alterne les jambes ou fais tout d\'un côté puis l\'autre.' },
+
+    { id:'e32', name:'Leg Extension', muscle:'legs', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Machine', sets:'3', reps:'12–15', rest:60,
+      steps:[
+        { t:'Installation', d:'Assis sur la machine, le coussin placé au niveau de tes chevilles. Le dos bien calé au fond du siège.' },
+        { t:'Mouvement', d:'Tends les jambes pour soulever la charge en contractant fortement les quadriceps.' },
+        { t:'Contrôle', d:'Maintiens une seconde en haut, puis redescends en retenant le poids.' },
+      ],
+      tips:'Parfait pour finir ta séance jambes et isoler spécifiquement les quadriceps.' },
 
     // ── FESSIERS ──────────────────────────────────────────
     { id:'e19', name:'Hip thrust', muscle:'glutes', icon:'🏋️',

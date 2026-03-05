@@ -391,8 +391,8 @@ const APP = (() => {
       </div>
       ${e.tips ? `<div class="tip-box">💡 <strong>Pro tip :</strong> ${esc(e.tips)}</div>` : ''}
       <div style="margin-top:20px;">
-        <button class="btn btn-primary" onclick="APP.setTimer(${e.rest})">
-          ⏱️ Démarrer timer ${e.rest}s
+        <button class="btn btn-primary" onclick="APP.startRestTimer(${e.rest})">
+          ⏱️ Lancer le repos (${e.rest}s)
         </button>
       </div>`;
 
@@ -482,7 +482,11 @@ const APP = (() => {
     el?.classList.toggle('open');
   }
 
-  function openExoById(id) { openExoModal(id); goPage('library'); }
+  function openExoById(id) { 
+    closeModal();
+    goPage('library');
+    setTimeout(() => openExoModal(id), 50);
+  }
 
   /* ─────────────────────────────────────────────
      ══════════════════════════════════════════
@@ -506,7 +510,10 @@ const APP = (() => {
     const sets    = parseInt(document.getElementById('log-sets')?.value);
     const date    = new Date().toLocaleDateString('fr-FR');
 
-    if (!exoId || isNaN(weight) || isNaN(reps)) { toast('Remplis tous les champs'); return; }
+    if (!exoId || isNaN(weight) || isNaN(reps) || weight < 0 || reps <= 0) { 
+      toast('Remplis correctement tous les champs (valeurs > 0)'); 
+      return; 
+    }
 
     const e = DATA.getExercise(exoId);
     const entry = {
@@ -591,6 +598,12 @@ const APP = (() => {
       b.classList.toggle('active', +b.dataset.sec === sec);
     });
     goPage('timer');
+  }
+
+  function startRestTimer(sec) {
+    closeModal();
+    setTimer(sec);
+    startTimer();
   }
 
   function startTimer() {
@@ -727,6 +740,6 @@ const APP = (() => {
   else init();
 
   // API publique
-  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer };
+  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer };
 
 })();
