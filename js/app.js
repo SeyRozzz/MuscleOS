@@ -447,10 +447,22 @@ const APP = (() => {
     const el = document.getElementById('prog-result');
     if (!el || !prog) return;
 
+    // Afficher infos principales
     document.getElementById('prog-result-name').textContent = prog.name;
     document.getElementById('prog-result-desc').textContent = prog.description;
 
-    el.innerHTML = prog.days.map((day, di) => `
+    // Afficher focus global (avant le HTML des jours)
+    const focusHTML = `
+      <div style="background:var(--surface2); padding:12px; border-radius:var(--r-lg); margin-bottom:20px; border-left:3px solid var(--fire);">
+        <div style="font-size:0.85rem; color:var(--text3); margin-bottom:4px;">📌 FOCUS</div>
+        <div style="font-weight:600; color:var(--text);">${prog.focus || prog.description}</div>
+      </div>`;
+
+    // Render chaque jour
+    const daysHTML = prog.days.map((day, di) => {
+      const dayNotes = day.notes ? `<div style="font-size:0.75rem; color:var(--fire); margin-bottom:12px; padding:8px; background:rgba(249,115,22,0.1); border-radius:var(--r-md);">${day.notes}</div>` : '';
+
+      return `
       <div class="prog-day ${di===0?'open':''}" id="pday-${di}">
         <div class="prog-day-header" onclick="APP.toggleDay(${di})">
           <div class="prog-day-title">
@@ -462,20 +474,30 @@ const APP = (() => {
           </svg>
         </div>
         <div class="prog-day-body">
-          ${day.exos.map(ex => {
+          ${dayNotes}
+          ${day.exos.map((ex, ei) => {
             const e = DATA.getExercise(ex.id);
             if (!e) return '';
+            const tempo = ex.tempo ? `<div style="font-size:0.7rem; color:var(--text3);">⏱️ ${ex.tempo}</div>` : '';
+            const exoNotes = ex.notes ? `<div style="font-size:0.72rem; color:var(--ice); margin-top:4px;">${ex.notes}</div>` : '';
             return `
-              <div class="exo-row">
-                <div class="exo-row-icon">${e.icon}</div>
-                <div class="exo-row-info">
-                  <div class="exo-row-name">${esc(e.name)}</div>
-                  <div class="exo-row-detail">${esc(e.equipment)}</div>
+              <div style="border-bottom:1px solid var(--border); padding:12px 0; ${ei === day.exos.length - 1 ? 'border-bottom:none;' : ''}">
+                <div class="exo-row">
+                  <div class="exo-row-icon">${e.icon}</div>
+                  <div class="exo-row-info" style="flex:1;">
+                    <div class="exo-row-name">${esc(e.name)}</div>
+                    <div class="exo-row-detail" style="font-size:0.7rem;">${esc(e.equipment)}</div>
+                    ${tempo}
+                  </div>
+                  <div style="text-align:right;">
+                    <div class="exo-row-sets">${ex.sets}×${esc(ex.reps)}</div>
+                    <div style="font-size:0.7rem; color:var(--text3); margin-top:2px;">${ex.rest}s repos</div>
+                  </div>
                 </div>
-                <div class="exo-row-sets">${ex.sets}×${esc(ex.reps)}</div>
+                ${exoNotes}
               </div>`;
           }).join('')}
-          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+          <div style="margin-top:16px;display:flex;gap:6px;flex-wrap:wrap;">
             ${day.exos.map(ex => {
               const e = DATA.getExercise(ex.id);
               if (!e) return '';
@@ -483,7 +505,10 @@ const APP = (() => {
             }).join('')}
           </div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
+
+    el.innerHTML = focusHTML + daysHTML;
   }
 
   function toggleDay(i) {

@@ -527,126 +527,257 @@ const DATA = (() => {
      TEMPLATES DE PROGRAMME
   ═══════════════════════════════════════════════════════════ */
   const PROGRAM_TEMPLATES = {
-    // ── PPL 3J ──────────────────────────────────────────────
-    ppl3: {
-      name: 'Push / Pull / Legs — 3 jours',
-      description: 'Programme classique pour intermédiaires. Optimal pour 3 séances/semaine.',
-      level: 'intermediate',
-      days: [
-        {
-          name: 'Jour A — Push (Pecs + Épaules + Triceps)',
-          exos: [
-            { id:'e01', sets:4, reps:'6–10', rest:120 },
-            { id:'e02', sets:3, reps:'10–12', rest:90 },
-            { id:'e09', sets:3, reps:'8–12', rest:90 },
-            { id:'e10', sets:3, reps:'15–20', rest:60 },
-            { id:'e14', sets:3, reps:'12–15', rest:75 },
-          ]
-        },
-        {
-          name: 'Jour B — Pull (Dos + Biceps)',
-          exos: [
-            { id:'e06', sets:4, reps:'6–10', rest:120 },
-            { id:'e07', sets:3, reps:'8–12', rest:90 },
-            { id:'e08', sets:3, reps:'12–15', rest:75 },
-            { id:'e11', sets:3, reps:'15–20', rest:60 },
-            { id:'e12', sets:3, reps:'10–15', rest:75 },
-          ]
-        },
-        {
-          name: 'Jour C — Legs (Jambes + Fessiers)',
-          exos: [
-            { id:'e16', sets:4, reps:'6–10', rest:150 },
-            { id:'e17', sets:3, reps:'12–15', rest:90 },
-            { id:'e19', sets:3, reps:'10–15', rest:90 },
-            { id:'e18', sets:3, reps:'10–12', rest:75 },
-            { id:'e21', sets:3, reps:'45 sec', rest:60 },
-          ]
-        },
-      ]
-    },
-
-    // ── FULL BODY 3J ─────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════
+    // DÉBUTANT — Full Body 3x/week (tout le corps, chaque séance)
+    // Ojectif: Apprendre la technique, créer une base
+    // ══════════════════════════════════════════════════════════════
     fullbody3: {
-      name: 'Full Body — 3 jours',
-      description: 'Idéal pour les débutants. Travaille tout le corps à chaque séance.',
+      name: 'Full Body 3x — Débutant',
+      description: 'Idéal pour débuter. Travaille chaque groupe musculaire 2x/sem. Construis une base solide.',
       level: 'beginner',
+      focus: 'Apprendre + Hypertrophie légère',
       days: [
         {
-          name: 'Séance A',
+          name: '📅 Jour 1 — Full Body A',
+          notes: '🎯 Focus: Compound push et jambes',
           exos: [
-            { id:'e01', sets:3, reps:'8–12', rest:120 },
-            { id:'e06', sets:3, reps:'5–8', rest:120 },
-            { id:'e16', sets:3, reps:'8–12', rest:120 },
-            { id:'e09', sets:3, reps:'10–15', rest:90 },
-            { id:'e21', sets:3, reps:'30 sec', rest:60 },
+            // WARM-UP (implicite): 5-10 min cardio léger
+            { id:'e01', name:'Développé couché', sets:3, reps:'8–12', rest:120, tempo:'3-1-1', notes:'Compound lourd' },
+            { id:'e16', name:'Squat ou Leg Press', sets:3, reps:'8–12', rest:120, notes:'Compound jambes' },
+            { id:'e06', name:'Tractions ou Row', sets:3, reps:'8–12', rest:90, notes:'Tirage composé' },
+            { id:'e09', name:'Développé militaire', sets:2, reps:'10–12', rest:90, notes:'Épaules + stabilité' },
+            { id:'e21', name:'Abs', sets:2, reps:'15–20 reps', rest:60, notes:'Finisheur core' },
           ]
         },
         {
-          name: 'Séance B',
+          name: '📅 Jour 2 — Full Body B',
+          notes: '🎯 Focus: Compound pull et hypertrophie',
           exos: [
-            { id:'e07', sets:3, reps:'10–12', rest:90 },
-            { id:'e02', sets:3, reps:'10–12', rest:90 },
-            { id:'e19', sets:3, reps:'12–15', rest:90 },
-            { id:'e12', sets:3, reps:'12–15', rest:75 },
-            { id:'e14', sets:3, reps:'12–15', rest:75 },
+            { id:'e07', name:'Rowing barre ou haltères', sets:3, reps:'8–12', rest:120, notes:'Dos épaisseur' },
+            { id:'e19', name:'Leg Curl ou Leg Extension', sets:3, reps:'12–15', rest:90, notes:'Isolation ischio/quad' },
+            { id:'e02', name:'Développé haltères', sets:3, reps:'10–12', rest:90, notes:'Variation pecs' },
+            { id:'e12', name:'Curl biceps', sets:2, reps:'12–15', rest:75, notes:'Isolation pumpe' },
+            { id:'e22', name:'Squat sumo ou fentes', sets:2, reps:'12–15', rest:75, notes:'Volume jambes' },
           ]
         },
         {
-          name: 'Séance C',
+          name: '📅 Jour 3 — Full Body C',
+          notes: '🎯 Focus: Hypertrophie et pump',
           exos: [
-            { id:'e05', sets:3, reps:'5–8', rest:180 },
-            { id:'e08', sets:3, reps:'12–15', rest:75 },
-            { id:'e17', sets:3, reps:'12–15', rest:90 },
-            { id:'e10', sets:3, reps:'15–20', rest:60 },
-            { id:'e22', sets:3, reps:'15–20', rest:60 },
+            { id:'e05', name:'Dumbbell Bench Press', sets:3, reps:'10–12', rest:90, notes:'Stabilité + pecs' },
+            { id:'e20', name:'Leg Press', sets:3, reps:'12–15', rest:90, notes:'Volume jambes' },
+            { id:'e08', name:'Lat Pulldown', sets:3, reps:'12–15', rest:75, notes:'Dos largeur' },
+            { id:'e10', name:'Lateral Raise', sets:2, reps:'15–20', rest:60, notes:'Épaules isolées' },
+            { id:'e14', name:'Tricep Dips', sets:2, reps:'10–15', rest:75, notes:'Triceps pump' },
           ]
         },
       ]
     },
 
-    // ── UPPER/LOWER 4J ────────────────────────────────────────
-    ul4: {
-      name: 'Upper / Lower — 4 jours',
-      description: 'Programme pour intermédiaires à avancés. Meilleur équilibre volume/récupération.',
-      level: 'advanced',
+    // ══════════════════════════════════════════════════════════════
+    // INTERMÉDIAIRE — PPL 3x/week (Split par Mouvement)
+    // Objectif: Augmenter le volume par groupe, meilleure récupération
+    // ══════════════════════════════════════════════════════════════
+    ppl3: {
+      name: 'PPL 3x — Intermédiaire',
+      description: 'Push/Pull/Legs — Chaque groupe 1x/sem. Le classique pour la hypertrophie.',
+      level: 'intermediate',
+      focus: 'Hypertrophie maximale',
       days: [
         {
-          name: 'Lundi — Upper Force',
+          name: '📅 Jour 1 — PUSH (Pecs + Épaules + Triceps)',
+          notes: '🎯 Heavy compounds → Volume isolations',
           exos: [
-            { id:'e01', sets:5, reps:'3–6', rest:180 },
-            { id:'e06', sets:5, reps:'4–6', rest:180 },
-            { id:'e09', sets:4, reps:'6–8', rest:120 },
-            { id:'e07', sets:3, reps:'8–10', rest:90 },
+            // COMPOUND HEAVY
+            { id:'e01', name:'Développé couché', sets:4, reps:'6–8', rest:180, tempo:'3-1-2', notes:'Composé lourd — Progressive Overload' },
+            { id:'e09', name:'Développé militaire', sets:3, reps:'6–8', rest:180, notes:'Épaules force' },
+            // VOLUME HYPERTROPHIE
+            { id:'e02', name:'Développé haltères incliné', sets:4, reps:'10–12', rest:90, notes:'Haut pecs + stabilité' },
+            { id:'e10', name:'Lateral Raise', sets:3, reps:'12–15', rest:60, notes:'Épaules isolées' },
+            { id:'e14', name:'Tricep Dips ou extension', sets:3, reps:'10–12', rest:75, notes:'Triceps volume' },
+            { id:'e15', name:'Push-ups ou Cable fly', sets:3, reps:'15–20', rest:45, notes:'Finisheur pump' },
           ]
         },
         {
-          name: 'Mardi — Lower Force',
+          name: '📅 Jour 2 — PULL (Dos + Biceps)',
+          notes: '🎯 Vertical puis Horizontal tirage',
           exos: [
-            { id:'e16', sets:5, reps:'3–6', rest:180 },
-            { id:'e20', sets:4, reps:'6–8', rest:120 },
-            { id:'e19', sets:3, reps:'8–12', rest:90 },
-            { id:'e21', sets:3, reps:'60 sec', rest:60 },
+            // VERTICAL TIRAGE (largeur dos)
+            { id:'e06', name:'Tractions ou Lat Pulldown', sets:4, reps:'6–10', rest:120, notes:'Dos largeur — Force' },
+            // HORIZONTAL TIRAGE (épaisseur dos)
+            { id:'e07', name:'Rowing barre ou haltères', sets:4, reps:'8–10', rest:120, notes:'Dos épaisseur — Force' },
+            // HYPERTROPHIE DOS
+            { id:'e08', name:'Lat Pulldown variations', sets:3, reps:'12–15', rest:75, notes:'Dos volume' },
+            { id:'e11', name:'Rowing machine ou face pulls', sets:3, reps:'12–15', rest:60, notes:'Dos arrière + scapulae' },
+            // BICEPS
+            { id:'e12', name:'Barbell Curl', sets:3, reps:'8–12', rest:75, notes:'Biceps force' },
+            { id:'e13', name:'Dumbbell Curl variations', sets:3, reps:'12–15', rest:60, notes:'Biceps finisheur' },
           ]
         },
         {
-          name: 'Jeudi — Upper Volume',
+          name: '📅 Jour 3 — LEGS (Jambes + Fessiers)',
+          notes: '🎯 Composés lourds → Iso volume → Core',
           exos: [
-            { id:'e02', sets:4, reps:'10–15', rest:75 },
-            { id:'e08', sets:4, reps:'12–15', rest:75 },
-            { id:'e10', sets:4, reps:'15–20', rest:60 },
-            { id:'e11', sets:4, reps:'15–20', rest:60 },
-            { id:'e12', sets:3, reps:'12–15', rest:60 },
-            { id:'e15', sets:3, reps:'15–20', rest:60 },
+            // COMPOSÉ LOURD QUAD
+            { id:'e16', name:'Squat ou Hack Squat', sets:4, reps:'6–10', rest:180, notes:'Jambes force — Heavy' },
+            // COMPOSÉ LOURD ISCHIO
+            { id:'e18', name:'Deadlift ou RDL', sets:3, reps:'6–8', rest:180, notes:'Ischio force' },
+            // VOLUME JAMBES AVANT
+            { id:'e17', name:'Leg Press', sets:3, reps:'12–15', rest:90, notes:'Quad volume' },
+            // VOLUME JAMBES ARRIÈRE
+            { id:'e19', name:'Leg Curl', sets:3, reps:'12–15', rest:75, notes:'Ischio isolation' },
+            // FESSIERS
+            { id:'e20', name:'Hip Thrust ou Squat sumo', sets:3, reps:'10–12', rest:75, notes:'Fessiers hypertrophie' },
+            // FINISHEUR
+            { id:'e21', name:'Planches ou Cable crunches', sets:3, reps:'15–20 reps', rest:45, notes:'Core finisheur' },
+          ]
+        },
+      ]
+    },
+
+    // ══════════════════════════════════════════════════════════════
+    // AVANCÉ — Upper/Lower 4x/week (Blocs Force + Hypertrophie)
+    // Objectif: Max volume avec bonne récupération + Periodization
+    // ══════════════════════════════════════════════════════════════
+    ul4: {
+      name: 'Upper/Lower 4x — Avancé',
+      description: 'Split optimisé. Combine Force (3-5) et Hypertrophie (8-12) dans la semaine.',
+      level: 'advanced',
+      focus: 'Force + Hypertrophie alternées',
+      days: [
+        {
+          name: '📅 Lundi — UPPER FORCE',
+          notes: '🎯 Poids lourd, reps basses, repos long',
+          exos: [
+            // PRIMARY COMPOUND
+            { id:'e01', name:'Bench Press (lourd)', sets:5, reps:'3–6', rest:180, tempo:'3-0-2', notes:'Pecs Force — Focus technique' },
+            { id:'e09', name:'OHP (lourd)', sets:4, reps:'4–6', rest:180, notes:'Épaules force' },
+            { id:'e06', name:'Weighted Pullups ou Row lourd', sets:4, reps:'5–8', rest:150, notes:'Dos force épaisseur' },
+            // SECONDARY ACCESSORIES
+            { id:'e07', name:'Chest-to-bar Rows', sets:3, reps:'8–10', rest:120, notes:'Dos complémentaire' },
+            { id:'e14', name:'Weighted Dips', sets:3, reps:'6–8', rest:120, notes:'Triceps force' },
           ]
         },
         {
-          name: 'Vendredi — Lower Volume',
+          name: '📅 Mardi — LOWER FORCE',
+          notes: '🎯 Jambes lourdes, technique stricte',
           exos: [
-            { id:'e17', sets:4, reps:'12–15', rest:90 },
-            { id:'e18', sets:3, reps:'12–15', rest:75 },
-            { id:'e19', sets:4, reps:'12–15', rest:75 },
-            { id:'e22', sets:4, reps:'15–20', rest:60 },
+            { id:'e16', name:'Squat (lourd)', sets:5, reps:'3–6', rest:180, tempo:'3-0-2', notes:'Quad force — MAX effort' },
+            { id:'e18', name:'Deadlift ou Front Squat', sets:4, reps:'4–6', rest:180, notes:'Ischio/Core force' },
+            { id:'e20', name:'Hack Squat ou V-squat', sets:3, reps:'8–12', rest:120, notes:'Quad secondary' },
+            { id:'e19', name:'Leg Curl machine', sets:3, reps:'8–10', rest:90, notes:'Ischio sécurité' },
+            { id:'e21', name:'Ab wheel ou cable crunch', sets:3, reps:'10–15', rest:60, notes:'Core strength' },
+          ]
+        },
+        {
+          name: '📅 Jeudi — UPPER HYPERTROPHIE',
+          notes: '🎯 Volumé, reps moyennes-hautes, tempo contrôlé',
+          exos: [
+            // BENCH VARIATIONS
+            { id:'e02', name:'Dumbbell Bench (incline)', sets:4, reps:'10–12', rest:75, tempo:'3-1-1', notes:'Pecs hyper (stabilité)' },
+            { id:'e05', name:'Machine or Cable Chest Press', sets:3, reps:'12–15', rest:60, notes:'Pecs pump' },
+            // ROWING VARIATIONS
+            { id:'e08', name:'Lat Pulldown variations', sets:4, reps:'12–15', rest:70, notes:'Dos largeur volume' },
+            { id:'e11', name:'Chest-supported Row ou Serratus Rows', sets:3, reps:'12–15', rest:70, notes:'Dos/Serratus' },
+            // SHOULDERS
+            { id:'e10', name:'Machine Lateral Raise', sets:3, reps:'15–20', rest:60, notes:'Épaules isolées pump' },
+            // ARMS
+            { id:'e12', name:'Dumbbell Curl', sets:3, reps:'12–15', rest:60, notes:'Biceps volume' },
+            { id:'e15', name:'Rope Tricep Extension', sets:3, reps:'15–20', rest:45, notes:'Triceps finisheur' },
+          ]
+        },
+        {
+          name: '📅 Vendredi — LOWER HYPERTROPHIE',
+          notes: '🎯 Volume jambes, pump maximal',
+          exos: [
+            { id:'e17', name:'Leg Press (volumé)', sets:4, reps:'12–15', rest:80, notes:'Quad volume' },
+            { id:'e22', name:'Squat sumo ou Hack Squat variations', sets:3, reps:'12–15', rest:75, notes:'Inner quad + glutes' },
+            // ISCHIO
+            { id:'e19', name:'Machine Leg Curl', sets:4, reps:'12–15', rest:70, notes:'Ischio isolation' },
+            { id:'e20', name:'Hip Thrust machine', sets:4, reps:'12–15', rest:70, notes:'Glutes hyper' },
+            // VASTE
+            { id:'e04', name:'Leg Extension machine', sets:3, reps:'15–20', rest:60, notes:'Quad finisheur' },
+            // CORE
+            { id:'e21', name:'Machine crunch ou hanging leg raise', sets:3, reps:'15–20', rest:45, notes:'Core conditioning' },
+          ]
+        },
+      ]
+    },
+
+    // ══════════════════════════════════════════════════════════════
+    // AVANCÉ ALTERNATIVE — PPL 6x/week (Volume maximal)
+    // Objectif: 2 cycles PPL par semaine, hypertrophie maximale
+    // ══════════════════════════════════════════════════════════════
+    ppl6: {
+      name: 'PPL 6x — Avancé+',
+      description: '2 cycles Push/Pull/Legs par semaine. Pour trainingbros très motivés. Hypertrophie MAXIMALE.',
+      level: 'advanced',
+      focus: 'Volume extrême = Hypertrophie maximale',
+      days: [
+        {
+          name: '📅 Lundi — PUSH 1 (Force)',
+          notes: '🎯 Composés lourds',
+          exos: [
+            { id:'e01', name:'Bench Press', sets:4, reps:'6–8', rest:150, notes:'Heavy' },
+            { id:'e09', name:'OHP', sets:3, reps:'6–8', rest:150, notes:'Force épaules' },
+            { id:'e02', name:'Incline Dumbbell Press', sets:3, reps:'8–10', rest:90, notes:'Volume' },
+            { id:'e10', name:'Lateral Raise', sets:3, reps:'12–15', rest:60, notes:'Iso' },
+            { id:'e14', name:'Dips', sets:3, reps:'8–12', rest:75, notes:'Triceps' },
+          ]
+        },
+        {
+          name: '📅 Mardi — PULL 1 (Volume)',
+          notes: '🎯 Dos épaisseur + Biceps',
+          exos: [
+            { id:'e06', name:'Tractions', sets:4, reps:'8–12', rest:120, notes:'Largeur' },
+            { id:'e07', name:'Barbell Row', sets:4, reps:'8–10', rest:120, notes:'Épaisseur force' },
+            { id:'e08', name:'Lat Pulldown', sets:3, reps:'12–15', rest:75, notes:'Volume largeur' },
+            { id:'e12', name:'Barbell Curl', sets:3, reps:'8–12', rest:75, notes:'Biceps' },
+            { id:'e11', name:'Face Pulls', sets:3, reps:'15–20', rest:60, notes:'Rear delts' },
+          ]
+        },
+        {
+          name: '📅 Mercredi — LEGS 1 (Quads)',
+          notes: '🎯 Focus jambes avant',
+          exos: [
+            { id:'e16', name:'Squat', sets:4, reps:'6–10', rest:150, notes:'Jambes force' },
+            { id:'e17', name:'Leg Press', sets:3, reps:'10–12', rest:100, notes:'Volume' },
+            { id:'e04', name:'Leg Extension', sets:3, reps:'12–15', rest:60, notes:'Quad iso' },
+            { id:'e19', name:'Leg Curl', sets:3, reps:'12–15', rest:60, notes:'Ischio' },
+            { id:'e21', name:'Abs', sets:2, reps:'15–20', rest:45, notes:'Core' },
+          ]
+        },
+        {
+          name: '📅 Jeudi — PUSH 2 (Hypertrophie)',
+          notes: '🎯 Volumé et pump',
+          exos: [
+            { id:'e02', name:'Dumbbell Bench', sets:4, reps:'10–12', rest:80, notes:'Stabilité' },
+            { id:'e05', name:'Machine Chest Press', sets:3, reps:'12–15', rest:70, notes:'Volume' },
+            { id:'e10', name:'Machine Lateral Raise', sets:4, reps:'15–20', rest:60, notes:'Épaules mega pump' },
+            { id:'e15', name:'Rope Extensions', sets:3, reps:'15–20', rest:60, notes:'Triceps finisheur' },
+            { id:'e09', name:'Dumbbell Press', sets:3, reps:'10–12', rest:75, notes:'OHP variation' },
+          ]
+        },
+        {
+          name: '📅 Vendredi — PULL 2 (Hypertrophie)',
+          notes: '🎯 Volume dos + Biceps pump',
+          exos: [
+            { id:'e08', name:'Machine Lat Pulldown', sets:4, reps:'12–15', rest:75, notes:'Largeur volume' },
+            { id:'e11', name:'Chest-supported Row', sets:4, reps:'12–15', rest:75, notes:'Dos épaisseur' },
+            { id:'e13', name:'Cable or Machine Curl', sets:3, reps:'15–20', rest:60, notes:'Biceps pump' },
+            { id:'e12', name:'Dumbbell Curl', sets:3, reps:'12–15', rest:60, notes:'Biceps volume' },
+            { id:'e07', name:'Seal Rows ou incline bench row', sets:3, reps:'12–15', rest:70, notes:'Dos finisheur' },
+          ]
+        },
+        {
+          name: '📅 Samedi — LEGS 2 (Ischio/Glutes)',
+          notes: '🎯 Focus jambes arrière',
+          exos: [
+            { id:'e18', name:'Deadlift ou RDL', sets:4, reps:'6–8', rest:150, notes:'Force ischio' },
+            { id:'e20', name:'Hip Thrust', sets:4, reps:'10–12', rest:100, notes:'Glutes volume' },
+            { id:'e22', name:'Squat sumo', sets:3, reps:'12–15', rest:80, notes:'Inner thigh' },
+            { id:'e19', name:'Lying Leg Curl', sets:3, reps:'12–15', rest:70, notes:'Ischio iso' },
+            { id:'e21', name:'Crunches', sets:3, reps:'15–20', rest:45, notes:'Core' },
           ]
         },
       ]
