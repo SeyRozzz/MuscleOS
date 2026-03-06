@@ -8,9 +8,11 @@
 const AUTH = (() => {
 
   // Config
+  // NOTE: Update the production URL after deploying backend to Render/Railway
+  // Example: 'https://muscleos-api.onrender.com' or 'https://muscleos-api.railway.app'
   const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000'
-    : 'https://muscleos-api.herokuapp.com'; // À remplacer par ton URL backend production
+    : 'https://muscleos-api.onrender.com'; // PHASE 9: Update this after backend deployment
 
   const TOKEN_KEY = 'mos-token';
   const USER_KEY = 'mos-user';
