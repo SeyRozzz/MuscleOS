@@ -521,6 +521,301 @@ const DATA = (() => {
       ],
       tips:'Cible le moyen fessier, crucial pour la stabilité des hanches et un aspect arrondi du fessier.' },
 
+    // ── PHASE 8: ADDITIONAL EXERCISES ───────────────────────
+
+    // CHEST
+    { id:'e47', name:'Écarté à la poulie basse', muscle:'chest', icon:'🏋️',
+      secondary:['shoulders'], difficulty:'intermediaire',
+      equipment:'Poulies', sets:'3–4', reps:'10–15', rest:75,
+      steps:[
+        { t:'Position', d:'Debout au centre des deux poulies. Poignées au niveau de la poitrine.' },
+        { t:'Écart', d:'Écarte les bras largement, paumes vers l\'avant. Sentez un étirement dans la poitrine.' },
+        { t:'Contraction', d:'Ramène les poignées ensemble en contractant fortement la poitrine.' },
+        { t:'Retour', d:'Retour contrôlé. Pas d\'à-coups. Maintiens une légère flexion au coude.' },
+      ],
+      tips:'Excellent pour l\'isolation des pectoraux. Finisseur idéal après les movs composés.' },
+
+    { id:'e48', name:'Dips (pectoraux)', muscle:'chest', icon:'💪',
+      secondary:['triceps','shoulders'], difficulty:'avance',
+      equipment:'Banc / Station dips', sets:'3–4', reps:'8–15', rest:90,
+      steps:[
+        { t:'Prise', d:'Mains plus larges que les épaules. Corps légèrement penché en avant pour cibler pecs.' },
+        { t:'Descente', d:'Descends lentement. Coudes flèchissent vers l\'extérieur, pas vers le corps.' },
+        { t:'Bas', d:'Va jusqu\'à un angle de 90° aux coudes. Sentez l\'étirement thoracique.' },
+        { t:'Montée', d:'Pousse pour remonter. Contracte fortement les pectoraux en haut.' },
+      ],
+      tips:'Un des meilleurs movs de poitrine. Ajouter du poids si trop facile. Garde le torse penché!' },
+
+    // BACK
+    { id:'e49', name:'Tirage vertical prise neutre', muscle:'back', icon:'💪',
+      secondary:['biceps'], difficulty:'intermediaire',
+      equipment:'Lat machine', sets:'3–4', reps:'8–12', rest:90,
+      steps:[
+        { t:'Position', d:'Assis, dos droit. Poignée neutre (paumes face à face).' },
+        { t:'Tirage', d:'Tire vers le bas jusqu\'à la poitrine. Coudes vers l\'arrière et vers le bas.' },
+        { t:'Retour', d:'Contrôle la machine. N\'utilise pas l\'élan. Tension constante.' },
+      ],
+      tips:'Meilleur compromis entre lat pulldown et chin-ups. Parfait pour débutants et force.' },
+
+    { id:'e50', name:'Tirage face (Face pulls)', muscle:'back', icon:'🏋️',
+      secondary:['shoulders','triceps'], difficulty:'debutant',
+      equipment:'Poulie haute', sets:'3–4', reps:'12–15', rest:60,
+      steps:[
+        { t:'Position', d:'Debout face à la poulie haute. Corde attachée. Mains en pronation.' },
+        { t:'Tirage', d:'Tire vers les yeux/haut du visage. Coudes hauts et écartés.' },
+        { t:'Contraction', d:'Contracte les rhomboïdes et le dos arrière. Pivote les mains (supination).' },
+        { t:'Retour', d:'Retour contrôlé. Tension constante.' },
+      ],
+      tips:'Excellent pour la santé de l\'épaule. Prévient les blessures. À faire régulièrement.' },
+
+    // SHOULDERS
+    { id:'e51', name:'Élévations latérales haltères', muscle:'shoulders', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Haltères', sets:'3–4', reps:'10–15', rest:60,
+      steps:[
+        { t:'Position', d:'Debout, haltères de chaque côté. Bras légèrement fléchis (20°), paumes face à face.' },
+        { t:'Élévation', d:'Élève les haltères latéralement jusqu\'à la hauteur de l\'épaule.' },
+        { t:'Contraction', d:'Courte pause en haut. Le pinky légèrement plus haut que le pouce.' },
+        { t:'Descente', d:'Descente lente et contrôlée. Pas de chute libre.' },
+      ],
+      tips:'Le meilleur exercice pour des épaules larges. Cible le médian. Poids modéré > poids lourd.' },
+
+    { id:'e52', name:'Développé Arnold', muscle:'shoulders', icon:'🏋️',
+      secondary:['chest','triceps'], difficulty:'intermediaire',
+      equipment:'Haltères / Machine', sets:'3–4', reps:'8–12', rest:90,
+      steps:[
+        { t:'Position', d:'Assis, dos droit. Haltères au niveau des épaules, paumes face à vous.' },
+        { t:'Rotation', d:'Pousse tout en faisant pivoter les paumes vers l\'avant (rotation externe).' },
+        { t:'Haut', d:'Presse au-dessus de la tête, bras tendus. Les haltères finissent paumes vers l\'avant.' },
+        { t:'Descente', d:'Retour en inversant le mouvement. Rotation paumes vers vous.' },
+      ],
+      tips:'Cible les 3 chefs de l\'épaule. Plus lourd que les élévations latérales normales.' },
+
+    // BICEPS
+    { id:'e53', name:'Curl barre droite', muscle:'biceps', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Barre droite', sets:'3–4', reps:'6–12', rest:90,
+      steps:[
+        { t:'Position', d:'Debout, barre en prise pronation (paumes vers l\'avant). Bras tendus. Coudes fixes.' },
+        { t:'Curl', d:'Plie les coudes. Monte la barre jusqu\'au niveau du menton/épaules. Contraction maximale.' },
+        { t:'Descente', d:'Descente lente (2-3 sec). Pas d\'à-coups. Contrôle total.' },
+      ],
+      tips:'L\'exercice biceps CLASSIQUE. Force et hypertrophie. Poids lourd mais contrôlé.' },
+
+    { id:'e54', name:'Curl pupitre (Preacher curl)', muscle:'biceps', icon:'💪',
+      secondary:[], difficulty:'intermediaire',
+      equipment:'Banc pupitre / Haltères', sets:'3–4', reps:'8–12', rest:75,
+      steps:[
+        { t:'Position', d:'Assis au banc pupitre. Triceps appuyés. Haltères en mains.' },
+        { t:'Curl', d:'Plie les coudes. Aucun repos en bas (tension continue).' },
+        { t:'Contraction', d:'Contracte fortement en haut. Pas de balancement.' },
+        { t:'Descente', d:'Lente et contrôlée jusqu\'à ~90° de flexion.' },
+      ],
+      tips:'Isolement pur. Excellent pour augmenter le pic du biceps. Aucun "triche".' },
+
+    // TRICEPS
+    { id:'e55', name:'Tirage corde triceps', muscle:'triceps', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Poulie haute / Corde', sets:'3–4', reps:'10–15', rest:60,
+      steps:[
+        { t:'Position', d:'Debout face à la poulie haute. Corde en mains. Coudes fixes près du corps.' },
+        { t:'Extension', d:'Tire vers le bas. Pleine extension des coudes. Paumes séparées en bas.' },
+        { t:'Contraction', d:'Contracte les triceps fermement. Courte pause.' },
+        { t:'Retour', d:'Retour contrôlé. Les coudes restent fixes.' },
+      ],
+      tips:'Excellent pour définition et isolement. Parfait pour finisseur ou pre-exhaustion.' },
+
+    { id:'e56', name:'Extension triceps assis (Overhead)', muscle:'triceps', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Haltère / Corde', sets:'3–4', reps:'10–15', rest:75,
+      steps:[
+        { t:'Position', d:'Assis ou debout. Haltère au-dessus de la tête, mains tenant la tête du poids.' },
+        { t:'Descente', d:'Descends derrière la tête. Coudes fixes, 60-90° angle en bas.' },
+        { t:'Étirement', d:'Sentez l\'étirement au triceps long (arrière). Tenez brièvement.' },
+        { t:'Extension', d:'Pousse vers le haut en contractant. Arrivée presque complète.' },
+      ],
+      tips:'Cible le triceps long. Excellent pour taille des bras. Poids modéré." },
+
+    // LEGS (5 exercices)
+    { id:'e57', name:'Leg Press', muscle:'legs', icon:'🏋️',
+      secondary:['glutes','hamstrings'], difficulty:'debutant',
+      equipment:'Machine leg press', sets:'4–5', reps:'8–15', rest:120,
+      steps:[
+        { t:'Position', d:'Assis. Dos et tête contre les coussinets. Pieds largeur d\'épaules. Pointes légèrement dehors (5-10°).' },
+        { t:'Descente', d:'Descends lentement. Genoux vont vers la poitrine. Jamais verrouille complètement en bas.' },
+        { t:'Bas', d:'Angle ~90° aux genoux. Dos reste collé au siège.' },
+        { t:'Montée', d:'Pousse explosif (mais contrôlé). Ne verrouille pas les genoux en haut.' },
+      ],
+      tips:'Parfait pour débutants. Permet des poids lourds en sécurité. Reconstruit progressivement.' },
+
+    { id:'e58', name:'Squat à la machine Hack', muscle:'legs', icon:'🏋️',
+      secondary:['glutes','quadriceps'], difficulty:'intermediaire',
+      equipment:'Machine Hack Squat', sets:'3–4', reps:'8–12', rest:120,
+      steps:[
+        { t:'Position', d:'Dos contre le coussin. Pieds largeur d\'épaules. Mains sur les poignées.' },
+        { t:'Descente', d:'Descends doucement. Genoux suivent la trajectoire de la machine.' },
+        { t:'Profondeur', d:'Descends profond si mobilité permet. Jamais verrouille les genoux.' },
+        { t:'Montée', d:'Pousse via les talons. Explosion contrôlée.' },
+      ],
+      tips:'Variante sécuritaire du squat libre. Grand ROM. Excellent pour hypertrophie quad.' },
+
+    { id:'e59', name:'Flexion jambes assis (Leg Curl)', muscle:'legs', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Machine leg curl', sets:'3–4', reps:'10–15', rest:75,
+      steps:[
+        { t:'Position', d:'Assis. Jambes tendues. Patins contre les mollets.' },
+        { t:'Flexion', d:'Plie les genoux. Ramène tes talons vers les fessiers.' },
+        { t:'Contraction', d:'Contracte les ischio-jambiers en haut. Courte pause.' },
+        { t:'Retour', d:'Retour lent. Pas de chute libre. Tension constante.' },
+      ],
+      tips:'Isolement pur ischio-jambiers. Prévient les déséquilibres quad/ischio. Essential à faire.' },
+
+    { id:'e60', name:'Élévations mollets assis', muscle:'legs', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Machine / Haltère', sets:'4–5', reps:'15–20', rest:45,
+      steps:[
+        { t:'Position', d:'Assis. Plante du pied sur la plateforme. Genou ~90°.' },
+        { t:'Montée', d:'Lève les talons. Toute la contrition sur les mollets.' },
+        { t:'Haut', d:'Contracte maximalement. Courte pause (1-2 sec).' },
+        { t:'Descente', d:'Descend lentement. Grand étirement des mollets.' },
+      ],
+      tips:'Cible le soléaire (moyen mollet). Poids élevé mais ROM complet. Haute reps.' },
+
+    { id:'e61', name:'Squat sumo (barre)', muscle:'legs', icon:'🏋️',
+      secondary:['glutes','inner thighs'], difficulty:'intermediaire',
+      equipment:'Barre + plaques', sets:'3–4', reps:'8–12', rest:120,
+      steps:[
+        { t:'Position', d:'Pieds bien écartés (largeur +50% épaules). Pointes vers l\'extérieur (45°).' },
+        { t:'Descente', d:'Descends en poussant les genoux extérieurement. Torse droit.' },
+        { t:'Profondeur', d:'Va en parallèle ou plus bas si flexibilité permet.' },
+        { t:'Montée', d:'Pousse via les talons et l\'intérieur des cuisses. Explosion contrôlée.' },
+      ],
+      tips:'Grande sollicitation adducteurs et fessiers. Moins de stress genoux qu\'un squat standard.' },
+
+    // GLUTES (3 exercices)
+    { id:'e62', name:'Squat Pendulum', muscle:'glutes', icon:'👃',
+      secondary:['legs','quads'], difficulty:'intermediaire',
+      equipment:'Machine Pendulum', sets:'3–4', reps:'10–15', rest:90,
+      steps:[
+        { t:'Position', d:'Assis incliné à 45°. Pieds sur la plateforme largeur épaules.' },
+        { t:'Descente', d:'Descends en arrière. Amplitude complète. Genoux flexibles.' },
+        { t:'Contraction', d:'Contracte fessiers max en haut. Squeeeze 1 sec.' },
+        { t:'Retour', d:'Contrôle. Animation continue.' },
+      ],
+      tips:'Brutal pour les fessiers. Moins sur genoux qu\'un squat libre. Machine parfaite pour hypertrophie glute.' },
+
+    { id:'e63', name:'Glute-Ham Raise', muscle:'glutes', icon:'💪',
+      secondary:['hamstrings'], difficulty:'avance',
+      equipment:'Machine GHR / Banc', sets:'3–4', reps:'6–12', rest:90,
+      steps:[
+        { t:'Position', d:'Genoux sur le coussin. Corps penché en avant.' },
+        { t:'Montée', d:'Ramène le corps vers le haut via contraction ischio/glute. Lever explosif.' },
+        { t:'Haut', d:'Corps en ligne droite. Contracte intensément.' },
+        { t:'Descente', d:'Lente. Contrôle excentrique (3-4 sec).' },
+      ],
+      tips:'L\'un des meilleurs movs ischio-glute. Très lourd. Construis progressivement. Difficile!' },
+
+    { id:'e64', name:'Soulevé de terre sumo (ischio focus)', muscle:'glutes', icon:'🏋️',
+      secondary:['hamstrings','lower back'], difficulty:'avance',
+      equipment:'Barre + disques', sets:'3–4', reps:'6–10', rest:180,
+      steps:[
+        { t:'Position', d:'Pieds large. Barre proche du corps. Dos plat. Prise pronation.' },
+        { t:'Montée', d:'Pousse via les talons. Dos plat (ne fléchit pas). "Slide" la barre le long des jambes.' },
+        { t:'Contraction', d:'Contracte fessiers et ischio-jambiers fermement en haut.' },
+        { t:'Descente', d:'Contrôle. Plier les jambes (squat) ou plier le dos (RDL).' },
+      ],
+      tips:'Mobilise énormément les ischio-jambiers et fessiers. Moins stress bas du dos que sumo classique.' },
+
+    // ABS (3 exercices)
+    { id:'e65', name:'Crunch machine', muscle:'abs', icon:'💪',
+      secondary:[], difficulty:'debutant',
+      equipment:'Machine à abdominaux', sets:'3–4', reps:'15–20', rest:45,
+      steps:[
+        { t:'Position', d:'Assis. Mains derrière la tête ou poignée. Coudes fixes vers le côté.' },
+        { t:'Flexion', d:'Plie vers l\'avant. Contracte les abdos. Sentez l\'écrasement du muscle.' },
+        { t:'Contraction', d:'Courte pause en contraction max (1 sec).' },
+        { t:'Retour', d:'Lent. Pas de relâchement complet (tension constante).' },
+      ],
+      tips:'Isolement pur. Grand ROM. Facile à progresser. Poids modéré, haute reps.' },
+
+    { id:'e66', name:'Ab Wheel Rollout', muscle:'abs', icon:'🔄',
+      secondary:['chest','shoulders'], difficulty:'avance',
+      equipment:'Ab wheel', sets:'3–4', reps:'8–15', rest:75,
+      steps:[
+        { t:'Position', d:'À genoux ou debout. Wheel en mains devant toi. Core bien gainé.' },
+        { t:'Déroulement', d:'Roule vers l\'avant. Corps en planche. Abs sous tension maximale.' },
+        { t:'Bas', d:'Amplitude complète si possible. Reste contracté.' },
+        { t:'Retour', d:'Roule en arriérée via contraction abdo forcée. Très difficile!' },
+      ],
+      tips:'Ultra difficile. Construis progressivement. Peut débuter sur table. Anti-extension puissante.' },
+
+    { id:'e67', name:'Crunch à la poulie (Cable crunch)', muscle:'abs', icon:'💪',
+      secondary:[], difficulty:'intermediaire',
+      equipment:'Poulie haute / Corde', sets:'3–4', reps:'12–18', rest:60,
+      steps:[
+        { t:'Position', d:'À genoux face à la poulie. Corde sur les épaules. Coudes fixes.' },
+        { t:'Flexion', d:'Plie vers le bas. Contracte abdos intensément. JAMAIS détends en bas (tension).' },
+        { t:'Contraction', d:'Squeeeze 1-2 sec. Contracte vraiment vraiment.' },
+        { t:'Retour', d:'Lent. Contrôle. Jamais relâchement complet.' },
+      ],
+      tips:'Grand ROM. Poids ajustable. Parfait pour hypertrophie abdo. Rien de mieux!' },
+
+    // CARDIO (5 exercices)
+    { id:'e68', name:'Machine à ramer (Rowing)', muscle:'cardio', icon:'🚣',
+      secondary:['back','legs','core'], difficulty:'debutant',
+      equipment:'Rowing machine', sets:'1', reps:'20–30 min', rest:0,
+      steps:[
+        { t:'Position', d:'Assis. Pieds sur les repose-pieds. Saisir la poignée. Dos droit.' },
+        { t:'Coup', d:'Push des jambes → Tirage bras → Plie le torse légèrement.' },
+        { t:'Retour', d:'Inverse: Extend bras → Étend jambes → Penche le torse.' },
+        { t:'Rythme', d:'Fluide, régulier. ~20-25 coups/min pour aérobie. Plus rapide pour HIIT.' },
+      ],
+      tips:'Meilleur cardio full-body. Engage 85% des muscles. Construis endurance et force.' },
+
+    { id:'e69', name:'Escaliers (Stair climber)', muscle:'cardio', icon:'⛰️',
+      secondary:['legs','glutes'], difficulty:'debutant',
+      equipment:'Stair climber / Vraies escaliers', sets:'1', reps:'10–20 min', rest:0,
+      steps:[
+        { t:'Position', d:'Mains optionnelles. Posture droite. Engage core.' },
+        { t:'Montée', d:'Monte les escaliers régulièrement. Pleine marche (appui complet).' },
+        { t:'Effort', d:'Essoufflement contrôlé. Peut parler mais difficilement.' },
+        { t:'Cadence', d:'60-80 marches/min pour aérobie. Plus rapide pour intensité.' },
+      ],
+      tips:'Construit les jambes et fessiers ÉNORMÉMENT. Cardio + musculation combo! "Trop bon"!' },
+
+    { id:'e70', name:'Corde à sauter (Jump rope)', muscle:'cardio', icon:'🔗',
+      secondary:['calves','coordination'], difficulty:'debutant',
+      equipment:'Jump rope', sets:'1', reps:'10–20 min', rest:0,
+      steps:[
+        { t:'Prise', d:'Corde au niveau des hanches. Tournée via les poignets (pas les bras).' },
+        { t:'Saut', d:'Saute sur les boules des pieds. Genoux légèrement fléchis.' },
+        { t:'Rythme', d:'120–160 sauts/min aérobie. 160–180+ pour intensité.' },
+        { t:'Respiration', d:'Régulière. Diaphragm breathing.' },
+      ],
+      tips:'Cardio le plus efficace. Rend les chevilles fortes. Coordination mentale. Très fun!' },
+
+    { id:'e71', name:'Burpees (Cardio explosif)', muscle:'cardio', icon:'🔥',
+      secondary:['chest','arms','legs'], difficulty:'avance',
+      equipment:'Aucun', sets:'1', reps:'20–50 répétitions', rest:45,
+      steps:[
+        { t:'Position', d:'Debout, pieds épaule-largeur.' },
+        { t:'Squat + Chute', d:'Accroupis. Mains au sol. "Jump" back en planche.' },
+        { t:'Pompe', d:'Faits une pompe (optionnel). Reviens à la planche.' },
+        { t:'Saut', d:'Jump jambes vers l\'avant. Saute vers le haut explosif!' },
+      ],
+      tips:'Un des movs cardio les PLUS intenses. Construits force + endurance. HIIT parfait!' },
+
+    { id:'e72', name:'Mountain Climbers', muscle:'cardio', icon:'⛰️',
+      secondary:['abs','shoulders','cardio'], difficulty:'intermediaire',
+      equipment:'Aucun', sets:'1', reps:'20–40 sec / round', rest:30,
+      steps:[
+        { t:'Position', d:'Planche. Mains sous les épaules. Corps en ligne droite.' },
+        { t:'Mouvement', d:'Ramène les genoux alternativement vers la poitrine très rapidement.' },
+        { t:'Rythme', d:'Aussi vite que possible. Full effort. 3-4 secondes par round.' },
+        { t:'Contrôle', d:'Hanche ne s\'affaisse jamais. Core gainé.' },
+      ],
+      tips:'Cardio BRUTAL + core killer. HIIT incroyable. Peu de rest = métabolisme à la folie!' },
+
   ];
 
   /* ═══════════════════════════════════════════════════════════
