@@ -1,5 +1,33 @@
 'use strict';
 
+// ═══════════════════════════════════════════════════════════
+// IMAGE MAPPING BY MUSCLE GROUP
+// ═══════════════════════════════════════════════════════════
+const MUSCLE_IMAGES = {
+  'chest': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop',
+  'back': 'https://images.unsplash.com/photo-1598971457318-b3d1e678e53d?w=400&h=300&fit=crop',
+  'shoulders': 'https://images.unsplash.com/photo-1597594057306-201ebd8d7c9f?w=400&h=300&fit=crop',
+  'biceps': 'https://images.unsplash.com/photo-1535743686920-55e06d675f3e?w=400&h=300&fit=crop',
+  'triceps': 'https://images.unsplash.com/photo-1612036782180-69c773e2edd0?w=400&h=300&fit=crop',
+  'legs': 'https://images.unsplash.com/photo-1623238282019-f2b4d6ab175f?w=400&h=300&fit=crop',
+  'glutes': 'https://images.unsplash.com/photo-1605296867004-e92036692add?w=400&h=300&fit=crop',
+  'abs': 'https://images.unsplash.com/photo-1608935585620-bd8266be4356?w=400&h=300&fit=crop',
+  'cardio': 'https://images.unsplash.com/photo-1552196881-acf06e488b2e?w=400&h=300&fit=crop'
+};
+
+// SVG icons for each muscle group
+const MUSCLE_SVG = {
+  'chest': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z"/></svg>',
+  'back': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>',
+  'shoulders': '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 7v10M7 12h10"/></svg>',
+  'biceps': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>',
+  'triceps': '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>',
+  'legs': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2v8m0 8v4M5 10h14v12H5z"/></svg>',
+  'glutes': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" opacity="0.5"/></svg>',
+  'abs': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zM4 11h16v2H4zM4 16h16v2H4z"/></svg>',
+  'cardio': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>'
+};
+
 const DATA = (() => {
 
   /* ═══════════════════════════════════════════════════════════

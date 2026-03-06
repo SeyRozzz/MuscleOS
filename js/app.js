@@ -179,6 +179,9 @@ const APP = (() => {
     const s = state;
     const m = s.macros;
 
+    // Auto-save calculation
+    saveCalcHistory();
+
     // Métriques
     document.getElementById('res-bmr').textContent  = s.bmr;
     document.getElementById('res-tdee').textContent = s.tdee;
@@ -373,8 +376,14 @@ const APP = (() => {
     const overlay = document.getElementById('modal-overlay');
     if (!modal || !overlay) return;
 
+    // Get muscle image from mapping
+    const muscleImage = document.querySelector('[data-muscle-images]')?.dataset.muscleImages || {};
+
     document.getElementById('modal-title').textContent = e.name;
     document.getElementById('modal-body').innerHTML = `
+      <div class="modal-image" style="width:100%;height:240px;background:var(--surface2);border-radius:var(--r-lg);margin-bottom:20px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop" alt="${esc(e.name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23333%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2240%22 fill=%22%23999%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E${esc(e.muscle.toUpperCase())}%3C/text%3E%3C/svg%3E'">
+      </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
         <span class="exo-diff-tag diff-${esc(e.difficulty)}" style="position:static">${esc(e.difficulty)}</span>
         <span style="font-size:0.78rem;color:var(--text3)">📦 ${esc(e.equipment)}</span>
@@ -501,6 +510,88 @@ const APP = (() => {
   function saveLogbook() {
     try { localStorage.setItem('mos-logbook', JSON.stringify(state.logbook)); }
     catch {}
+  }
+
+  // ─── CALCULATOR HISTORY ─────────────────────────────────────
+  function saveCalcHistory(calcResult) {
+    try {
+      const history = JSON.parse(localStorage.getItem('mos-calc-history') || '[]');
+      const entry = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('fr-FR'),
+        timestamp: Date.now(),
+        age: state.age,
+        weight: state.weight,
+        height: state.height,
+        bodyfat: state.bodyfat,
+        level: state.level,
+        goal: state.goal,
+        activity: state.activity,
+        sessions: state.sessions,
+        bmr: state.bmr,
+        tdee: state.tdee,
+        targetCalories: state.targetCalories,
+        surplus: state.surplus,
+        proteinNeed: state.proteinNeed,
+        macros: state.macros,
+        monthlyMuscleGain: state.monthlyMuscleGain
+      };
+      history.unshift(entry); // Add to beginning
+      if (history.length > 50) history.pop(); // Keep last 50
+      localStorage.setItem('mos-calc-history', JSON.stringify(history));
+
+      // Sync if authenticated
+      if (window.AUTH && AUTH.isAuthenticated()) {
+        AUTH.syncCalculations(history);
+      }
+    } catch {}
+  }
+
+  function loadCalcHistory() {
+    try {
+      const history = JSON.parse(localStorage.getItem('mos-calc-history') || '[]');
+      return history;
+    } catch { return []; }
+  }
+
+  function restoreCalcHistoryEntry(id) {
+    try {
+      const history = loadCalcHistory();
+      const entry = history.find(e => e.id === id);
+      if (!entry) return false;
+
+      // Restore state
+      state.age = entry.age;
+      state.weight = entry.weight;
+      state.height = entry.height;
+      state.bodyfat = entry.bodyfat;
+      state.level = entry.level;
+      state.goal = entry.goal;
+      state.activity = entry.activity;
+      state.sessions = entry.sessions;
+
+      // Update form
+      document.getElementById('age').value = entry.age;
+      document.getElementById('weight').value = entry.weight;
+      document.getElementById('height').value = entry.height;
+      document.getElementById('bodyfat').value = entry.bodyfat;
+      document.getElementById('activity').value = entry.activity;
+      document.getElementById('bodyfat').value = entry.bodyfat;
+
+      // Update slider values
+      document.getElementById('bfVal').textContent = entry.bodyfat + '%';
+      document.getElementById('spwVal').textContent = entry.sessions + ' séances';
+
+      // Set radio buttons
+      document.querySelector(`input[name="level"][value="${entry.level}"]`).checked = true;
+      document.querySelector(`input[name="goal"][value="${entry.goal}"]`).checked = true;
+
+      // Go back to step 1
+      goCalcStep(1);
+      toast('Calcul restauré! Continue avec le bouton Activité →');
+
+      return true;
+    } catch { return false; }
   }
 
   function addLog() {
@@ -829,6 +920,124 @@ const APP = (() => {
     if (btn) btn.textContent = '▶ Démarrer';
   }
 
+  // ─── INTERVAL TIMER (HIIT/Tabata) ─────────────────────────
+  let intervalState = {
+    mode: 'simple',  // simple or interval
+    currentRound: 0,
+    totalRounds: 8,
+    workSeconds: 20,
+    restSeconds: 10,
+    isWork: true,
+  };
+
+  function toggleTimerMode() {
+    const simpleBtn = document.getElementById('timer-mode-simple');
+    const intervalBtn = document.getElementById('timer-mode-interval');
+    const settings = document.getElementById('interval-settings');
+
+    simpleBtn?.addEventListener('click', () => {
+      intervalState.mode = 'simple';
+      simpleBtn.style.background = 'var(--fire-dim)';
+      simpleBtn.style.color = 'var(--fire)';
+      intervalBtn.style.background = 'transparent';
+      intervalBtn.style.color = 'var(--text3)';
+      settings.style.display = 'none';
+      resetTimer();
+    });
+
+    intervalBtn?.addEventListener('click', () => {
+      intervalState.mode = 'interval';
+      intervalBtn.style.background = 'var(--fire-dim)';
+      intervalBtn.style.color = 'var(--fire)';
+      simpleBtn.style.background = 'transparent';
+      simpleBtn.style.color = 'var(--text3)';
+      settings.style.display = 'block';
+      updateIntervalDuration();
+    });
+  }
+
+  function updateIntervalDuration() {
+    const work = parseInt(document.getElementById('interval-work')?.value || 20);
+    const rest = parseInt(document.getElementById('interval-rest')?.value || 10);
+    const rounds = parseInt(document.getElementById('interval-rounds')?.value || 8);
+    const total = ((work + rest) * rounds) - rest;
+    const mins = Math.floor(total / 60);
+    const secs = total % 60;
+    const duration = document.getElementById('total-duration');
+    if (duration) duration.textContent = `${mins}:${String(secs).padStart(2,'0')}`;
+  }
+
+  function startIntervalTimer() {
+    const work = parseInt(document.getElementById('interval-work')?.value || 20);
+    const rest = parseInt(document.getElementById('interval-rest')?.value || 10);
+    const rounds = parseInt(document.getElementById('interval-rounds')?.value || 8);
+
+    intervalState.workSeconds = work;
+    intervalState.restSeconds = rest;
+    intervalState.totalRounds = rounds;
+    intervalState.currentRound = 1;
+    intervalState.isWork = true;
+
+    state.timerRemaining = work;
+    state.timerSeconds = work;
+
+    const label = document.querySelector('.timer-label');
+    if (label) label.textContent = `🔥 TRAVAIL — Round ${intervalState.currentRound}/${rounds}`;
+
+    startTimer();
+  }
+
+  // Modify startTimer to handle intervals
+  const originalStartTimer = startTimer;
+  function startTimer() {
+    if (intervalState.mode === 'interval') {
+      if (state.timerRunning) return;
+      state.timerRunning = true;
+      const btn = document.getElementById('timer-start');
+      if (btn) btn.textContent = '⏸ Pause';
+
+      state.timerInterval = setInterval(() => {
+        state.timerRemaining--;
+        updateTimerDisplay();
+
+        if (state.timerRemaining <= 0) {
+          // Toggle between work and rest
+          if (intervalState.isWork) {
+            // Transition to rest
+            if (intervalState.currentRound < intervalState.totalRounds) {
+              intervalState.isWork = false;
+              state.timerRemaining = intervalState.restSeconds;
+              state.timerSeconds = intervalState.restSeconds;
+              const label = document.querySelector('.timer-label');
+              if (label) label.textContent = `😤 REPOS — Round ${intervalState.currentRound}/${intervalState.totalRounds}`;
+              navigator.vibrate([100, 50, 100]);
+            } else {
+              stopTimer();
+              timerDone();
+            }
+          } else {
+            // Transition to next work round
+            intervalState.currentRound++;
+            if (intervalState.currentRound <= intervalState.totalRounds) {
+              intervalState.isWork = true;
+              state.timerRemaining = intervalState.workSeconds;
+              state.timerSeconds = intervalState.workSeconds;
+              const label = document.querySelector('.timer-label');
+              if (label) label.textContent = `🔥 TRAVAIL — Round ${intervalState.currentRound}/${intervalState.totalRounds}`;
+              navigator.vibrate([100, 50, 100]);
+            } else {
+              stopTimer();
+              timerDone();
+            }
+          }
+          updateTimerDisplay();
+        }
+      }, 1000);
+    } else {
+      originalStartTimer();
+    }
+  }
+
   function updateTimerDisplay() {
     const r = state.timerRemaining;
     const total = state.timerSeconds;
@@ -913,8 +1122,25 @@ const APP = (() => {
     document.querySelectorAll('.timer-preset').forEach(btn => {
       btn.addEventListener('click', () => setTimer(+btn.dataset.sec));
     });
-    bind('timer-start',  () => { state.timerRunning ? pauseTimer() : startTimer(); });
+    bind('timer-start',  () => {
+      if (intervalState.mode === 'interval' && !state.timerRunning && intervalState.currentRound === 0) {
+        startIntervalTimer();
+      } else {
+        state.timerRunning ? pauseTimer() : startTimer();
+      }
+    });
     bind('timer-reset',  resetTimer);
+
+    // Timer mode toggle & interval inputs
+    toggleTimerMode();
+    const intervalInputs = ['interval-work', 'interval-rest', 'interval-rounds'];
+    intervalInputs.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('change', updateIntervalDuration);
+        el.addEventListener('input', updateIntervalDuration);
+      }
+    });
 
     // Init étapes
     goCalcStep(1);
@@ -926,6 +1152,6 @@ const APP = (() => {
   else init();
 
   // API publique
-  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart };
+  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()) };
 
 })();
