@@ -634,7 +634,7 @@ const DATA = (() => {
         { t:'Étirement', d:'Sentez l\'étirement au triceps long (arrière). Tenez brièvement.' },
         { t:'Extension', d:'Pousse vers le haut en contractant. Arrivée presque complète.' },
       ],
-      tips:'Cible le triceps long. Excellent pour taille des bras. Poids modéré." },
+      tips:'Cible le triceps long. Excellent pour taille des bras. Poids modéré.' },
 
     // LEGS (5 exercices)
     { id:'e57', name:'Leg Press', muscle:'legs', icon:'🏋️',
