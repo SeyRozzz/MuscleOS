@@ -805,9 +805,115 @@ canvas#prog-chart {
   animation: pulse 2s infinite;
 }
 
+/* ═══ VIEW TOGGLES ═══════════════════════════════════════════ */
+.view-toggles {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+.view-toggle {
+  padding: 8px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text3);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.view-toggle:hover {
+  background: var(--surface3);
+  color: var(--text);
+}
+.view-toggle.active {
+  background: var(--fire-dim);
+  color: var(--fire);
+  border-color: var(--fire);
+}
+
+/* ═══ HEATMAP ════════════════════════════════════════════════ */
+.heatmap-cell {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.heatmap-cell:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(249,115,22,0.2);
+}
+.heatmap-cell.empty {
+  opacity: 0.3;
+  cursor: default;
+}
+.heatmap-cell.low {
+  background: rgba(163,230,53,0.2);
+  color: var(--lime);
+}
+.heatmap-cell.medium {
+  background: rgba(249,115,22,0.3);
+  color: var(--fire-light);
+}
+.heatmap-cell.high {
+  background: var(--fire);
+  color: #000;
+  font-weight: 700;
+}
+.heatmap-cell[title] {
+  cursor: help;
+}
+
+/* ═══ STATS IMPROVEMENTS ═════════════════════════════════════ */
+.weekly-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.weekly-stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.weekly-stat:hover {
+  border-color: var(--border2);
+}
+.weekly-stat-value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--fire);
+  margin-bottom: 6px;
+}
+.weekly-stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 /* Scrollbar mobile */
 @media (max-width: 700px) {
   .stat-cards-grid { grid-template-columns: 1fr 1fr; }
   canvas#prog-chart { height: 180px; }
   .auth-container { padding: var(--sp-lg); }
+  .view-toggles { flex-wrap: wrap; }
+  .view-toggle { padding: 6px 12px; font-size: 0.8rem; }
+  .heatmap-cell { width: 28px; height: 28px; }
 }

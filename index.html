@@ -340,8 +340,24 @@
         <p class="page-sub">Enregistre tes charges, visualise tes records personnels et suis ta courbe de progression.</p>
       </div>
 
+      <!-- View toggles -->
+      <div class="view-toggles">
+        <button class="view-toggle active" data-view="jour" id="toggle-jour">📅 Jour</button>
+        <button class="view-toggle" data-view="semaine" id="toggle-semaine">📊 Semaine</button>
+        <button class="view-toggle" data-view="mois" id="toggle-mois">📈 Mois</button>
+        <button class="btn btn-sm" id="btn-export-csv" style="margin-left:auto;">⬇️ Exporter CSV</button>
+      </div>
+
       <!-- Stats rapides -->
       <div class="stat-cards-grid" id="log-stats"></div>
+
+      <!-- Heatmap (semaine) - hidden by default -->
+      <div id="heatmap-container" style="display:none; margin-bottom:32px;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">🔥 Activité des 4 dernières semaines</div><div class="card-sub">Chaque cellule = un jour (carré vide = pas d'entraînement)</div></div></div>
+          <div id="heatmap-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:20px;"><!-- Sera rempli en JS --></div>
+        </div>
+      </div>
 
       <!-- Graphique -->
       <div class="chart-wrap">

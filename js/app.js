@@ -654,38 +654,7 @@ const APP = (() => {
   }
 
   function renderLogbook() {
-    const tbody = document.getElementById('log-tbody');
-    if (!tbody) return;
-
-    if (!state.logbook.length) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text3)">Aucune séance enregistrée</td></tr>`;
-      renderStatsCards();
-      renderChart();
-      return;
-    }
-
-    // PRs par exercice (basé sur charge max)
-    const prs = {};
-    state.logbook.forEach(e => {
-      if (!prs[e.exoId] || e.weight > prs[e.exoId]) prs[e.exoId] = e.weight;
-    });
-
-    tbody.innerHTML = state.logbook.slice(0, 60).map(e => {
-      const isPR = prs[e.exoId] === e.weight;
-      return `
-        <tr>
-          <td>${esc(e.date)}</td>
-          <td>${esc(e.exoName)}${isPR?'<span class="pr-badge">PR</span>':''}</td>
-          <td><strong>${esc(e.weight)} kg</strong></td>
-          <td>${esc(e.reps)} reps × ${esc(e.sets)} séries</td>
-          <td>
-            <button class="btn btn-ghost btn-sm" onclick="APP.deleteLog(${e.id})" aria-label="Supprimer">✕</button>
-          </td>
-        </tr>`;
-    }).join('');
-
-    renderStatsCards();
-    renderChart();
+    renderLogbookView();
   }
 
   function renderStatsCards() {
@@ -1093,6 +1062,285 @@ const APP = (() => {
   }
 
   /* ─────────────────────────────────────────────
+     PHASE 7: SUIVI AVANCÉ
+  ───────────────────────────────────────────── */
+
+  let currentView = 'jour'; // 'jour', 'semaine', 'mois'
+
+  function switchView(view) {
+    currentView = view;
+    // Update toggle buttons
+    document.querySelectorAll('.view-toggle').forEach(b => {
+      b.classList.toggle('active', b.dataset.view === view);
+    });
+    // Show/hide heatmap
+    const heatmap = document.getElementById('heatmap-container');
+    if (heatmap) heatmap.style.display = view === 'semaine' ? 'block' : 'none';
+    renderLogbookView();
+  }
+
+  function renderLogbookView() {
+    if (currentView === 'jour') {
+      renderDayView();
+    } else if (currentView === 'semaine') {
+      renderWeekView();
+    } else if (currentView === 'mois') {
+      renderMonthView();
+    }
+  }
+
+  function renderDayView() {
+    // Afficher le tableau standard avec stats
+    const tbody = document.getElementById('log-tbody');
+    if (!tbody) return;
+
+    if (!state.logbook.length) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text3)">Aucune séance enregistrée</td></tr>`;
+      renderStatsCards();
+      renderChart();
+      return;
+    }
+
+    // PRs par exercice
+    const prs = {};
+    state.logbook.forEach(e => {
+      if (!prs[e.exoId] || e.weight > prs[e.exoId]) prs[e.exoId] = e.weight;
+    });
+
+    tbody.innerHTML = state.logbook.slice(0, 60).map(e => {
+      const isPR = prs[e.exoId] === e.weight;
+      return `
+        <tr>
+          <td>${esc(e.date)}</td>
+          <td>${esc(e.exoName)}${isPR?'<span class="pr-badge">PR</span>':''}</td>
+          <td><strong>${esc(e.weight)} kg</strong></td>
+          <td>${esc(e.reps)} reps × ${esc(e.sets)} séries</td>
+          <td>
+            <button class="btn btn-ghost btn-sm" onclick="APP.deleteLog(${e.id})" aria-label="Supprimer">✕</button>
+          </td>
+        </tr>`;
+    }).join('');
+
+    renderStatsCards();
+    renderChart();
+  }
+
+  function renderWeekView() {
+    renderHeatmap();
+    renderWeeklyStats();
+    renderChart();
+  }
+
+  function renderMonthView() {
+    renderMonthlyStats();
+    renderChart();
+  }
+
+  function renderHeatmap() {
+    const container = document.getElementById('heatmap-grid');
+    if (!container) return;
+
+    const today = new Date();
+    const days = [];
+
+    // 4 semaines = 28 jours
+    for (let i = 27; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      days.push(date);
+    }
+
+    // Compter entrées par jour
+    const dayMap = {};
+    state.logbook.forEach(log => {
+      const d = log.date.split('-').reverse().join('-'); // DD-MM-YYYY => YYYY-MM-DD
+      if (!dayMap[d]) dayMap[d] = 0;
+      dayMap[d]++;
+    });
+
+    // Créer grille heatmap
+    const maxSessions = Math.max(...Object.values(dayMap), 1);
+    const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+    let html = '';
+
+    days.forEach(date => {
+      const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+      const count = dayMap[dateStr] || 0;
+      const intensity = count === 0 ? 'empty' : count <= 2 ? 'low' : count <= 5 ? 'medium' : 'high';
+      const dayName = dayNames[date.getDay() === 0 ? 6 : date.getDay() - 1];
+      const label = date.toLocaleDateString('fr-FR', {day:'numeric', month:'numeric'});
+
+      html += `<div class="heatmap-cell ${intensity}" title="${dayName} ${label} – ${count} sér${count>1?'ies':''}">${count > 0 ? count : '—'}</div>`;
+    });
+
+    container.innerHTML = html;
+  }
+
+  function renderWeeklyStats() {
+    // Caller pendant la semaine view
+    const log = state.logbook;
+    if (!log.length) return;
+
+    // Dernière semaine (7 jours)
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(weekStart.getDate() - 6);
+
+    const weekLog = log.filter(e => {
+      const [d, m, y] = e.date.split('-').map(Number);
+      const eDate = new Date(y, m-1, d);
+      return eDate >= weekStart;
+    });
+
+    const sessions = weekLog.length;
+    const volume = weekLog.reduce((acc, e) => acc + e.weight * e.reps * e.sets, 0);
+    const exercises = new Set(weekLog.map(e => e.exoId)).size;
+
+    // Jours consécutifs
+    const uniqueDates = [...new Set(weekLog.map(e => e.date))].sort();
+    let streak = 0;
+    if (uniqueDates.length > 0) {
+      const [d, m, y] = uniqueDates[uniqueDates.length - 1].split('-').map(Number);
+      const lastDate = new Date(y, m-1, d);
+      const yDate = new Date();
+      yDate.setDate(yDate.getDate() - streak);
+
+      // Compter jours consécutifs en arrière
+      for (let i = 0; i < uniqueDates.length; i++) {
+        const [d, m, y] = uniqueDates[uniqueDates.length - 1 - i].split('-').map(Number);
+        const checkDate = new Date(y, m-1, d);
+        const expectedDate = new Date(today);
+        expectedDate.setDate(expectedDate.getDate() - i);
+        if (Math.abs(checkDate.getTime() - expectedDate.getTime()) < 86400000) {
+          streak = i + 1;
+        } else {
+          break;
+        }
+      }
+    }
+
+    const statsHtml = `
+      <div class="weekly-stats">
+        <div class="weekly-stat">
+          <span class="weekly-stat-value">⏰</span>
+          <span class="weekly-stat-label">Séances</span>
+          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${sessions}</span>
+        </div>
+        <div class="weekly-stat">
+          <span class="weekly-stat-value">📦</span>
+          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${(volume/1000).toFixed(1)}t</span>
+          <span class="weekly-stat-label">Volume</span>
+        </div>
+        <div class="weekly-stat">
+          <span class="weekly-stat-value">🎯</span>
+          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${exercises}</span>
+          <span class="weekly-stat-label">Exercices</span>
+        </div>
+        <div class="weekly-stat">
+          <span class="weekly-stat-value">🔥</span>
+          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${streak}</span>
+          <span class="weekly-stat-label">Jours consécutifs</span>
+        </div>
+      </div>
+    `;
+
+    // Insérer après heatmap
+    const heatmap = document.getElementById('heatmap-container');
+    if (heatmap) {
+      const existing = heatmap.querySelector('.weekly-stats');
+      if (existing) existing.remove();
+      heatmap.insertAdjacentHTML('afterend', statsHtml);
+    }
+  }
+
+  function renderMonthlyStats() {
+    // Afficher stats du mois en cours
+    const log = state.logbook;
+    if (!log.length) return;
+
+    const today = new Date();
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    const monthLog = log.filter(e => {
+      const [d, m, y] = e.date.split('-').map(Number);
+      const eDate = new Date(y, m-1, d);
+      return eDate >= monthStart && eDate <= today;
+    });
+
+    const sessions = monthLog.length;
+    const volume = monthLog.reduce((acc, e) => acc + e.weight * e.reps * e.sets, 0);
+    const exercises = new Set(monthLog.map(e => e.exoId)).size;
+    const avgPerSession = sessions > 0 ? (volume / sessions / 1000).toFixed(2) : 0;
+
+    const prs = {};
+    monthLog.forEach(e => {
+      if (!prs[e.exoId] || e.weight > prs[e.exoId]) prs[e.exoId] = e.weight;
+    });
+    const prCount = Object.keys(prs).length;
+
+    const statsHtml = `
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-header"><div><div class="card-title">📊 Statistiques du mois</div></div></div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:16px;">
+          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
+            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${sessions}</div>
+            <div style="font-size:0.8rem; color:var(--text3);">SÉANCES</div>
+          </div>
+          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
+            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${(volume/1000).toFixed(1)}t</div>
+            <div style="font-size:0.8rem; color:var(--text3);">VOLUME TOTAL</div>
+          </div>
+          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
+            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${avgPerSession}t</div>
+            <div style="font-size:0.8rem; color:var(--text3);">MOY/SÉANCE</div>
+          </div>
+          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
+            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${prCount}</div>
+            <div style="font-size:0.8rem; color:var(--text3);">PRS ÉTABLIS</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const logStats = document.getElementById('log-stats');
+    if (logStats && !logStats.querySelector('[data-monthly]')) {
+      logStats.insertAdjacentHTML('afterend', statsHtml.replace('<div class="card"', '<div data-monthly class="card"'));
+    }
+  }
+
+  function exportToCSV() {
+    if (!state.logbook.length) {
+      alert('Aucune donnée à exporter');
+      return;
+    }
+
+    const headers = ['Date', 'Exercice', 'Charge (kg)', 'Répétitions', 'Séries', 'Volume (kg)'];
+    const rows = state.logbook.map(e => [
+      e.date,
+      e.exoName,
+      e.weight,
+      e.reps,
+      e.sets,
+      (e.weight * e.reps * e.sets).toFixed(0)
+    ]);
+
+    const csv = [
+      headers.join(','),
+      ...rows.map(r => r.map(v => `"${v}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `muscleos-logbook-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  /* ─────────────────────────────────────────────
      INIT GLOBAL
   ───────────────────────────────────────────── */
   function init() {
@@ -1137,6 +1385,12 @@ const APP = (() => {
     renderLogbook();
     bind('btn-add-log', addLog);
 
+    // Phase 7: View toggles and CSV export
+    document.querySelectorAll('.view-toggle').forEach(btn => {
+      btn.addEventListener('click', () => switchView(btn.dataset.view));
+    });
+    bind('btn-export-csv', exportToCSV);
+
     // Modal
     document.getElementById('modal-close')?.addEventListener('click', closeModal);
     document.getElementById('modal-overlay')?.addEventListener('click', e => {
@@ -1177,6 +1431,6 @@ const APP = (() => {
   else init();
 
   // API publique
-  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()) };
+  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()), switchView, exportToCSV };
 
 })();
