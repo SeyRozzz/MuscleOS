@@ -379,11 +379,47 @@ const APP = (() => {
     // Get muscle image from mapping
     const muscleImage = document.querySelector('[data-muscle-images]')?.dataset.muscleImages || {};
 
+    // Build video section if available
+    const videoSection = e.video ? `
+      <div style="margin-bottom:20px;">
+        <div class="section-label">📹 Vidéo de démonstration</div>
+        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--r-lg);margin-bottom:12px;">
+          <iframe
+            style="position:absolute;top:0;left:0;width:100%;height:100%;"
+            src="https://www.youtube.com/embed/${esc(e.video)}"
+            title="${esc(e.name)}"
+            frameborder="0"
+            allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>` : '';
+
+    // Build image gallery if available
+    const imageGallery = e.images && e.images.length > 0 ? `
+      <div style="margin-bottom:20px;">
+        <div class="section-label">🖼️ Galerie d'exécution</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px;">
+          ${e.images.map((img, idx) => `
+            <img
+              src="${img}"
+              alt="Étape ${idx+1}"
+              style="width:100%;height:120px;object-fit:cover;border-radius:var(--r-md);cursor:pointer;transition:transform 0.2s;"
+              onclick="this.style.transform = this.style.transform === 'scale(1.5)' ? 'scale(1)' : 'scale(1.5)'; this.style.zIndex = this.style.transform === 'scale(1)' ? 'auto' : '999';"
+              title="Clique pour agrandir">
+          `).join('')}
+        </div>
+      </div>` : '';
+
     document.getElementById('modal-title').textContent = e.name;
     document.getElementById('modal-body').innerHTML = `
       <div class="modal-image" style="width:100%;height:240px;background:var(--surface2);border-radius:var(--r-lg);margin-bottom:20px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop" alt="${esc(e.name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23333%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2240%22 fill=%22%23999%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E${esc(e.muscle.toUpperCase())}%3C/text%3E%3C/svg%3E'">
+        <img src="${e.images && e.images[0] ? e.images[0] : 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop'}" alt="${esc(e.name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23333%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2240%22 fill=%22%23999%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E${esc(e.muscle.toUpperCase())}%3C/text%3E%3C/svg%3E'">
       </div>
+
+      ${videoSection}
+      ${imageGallery}
+
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
         <span class="exo-diff-tag diff-${esc(e.difficulty)}" style="position:static">${esc(e.difficulty)}</span>
         <span style="font-size:0.78rem;color:var(--text3)">📦 ${esc(e.equipment)}</span>
