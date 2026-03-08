@@ -1,0 +1,191 @@
+/**
+ * MuscleOS Page-Specific Styles
+ * Components and patterns used across the application pages
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   CALCULATOR — Strategy Selection Cards
+   ═════════════════════════════════════════════════════════════════ */
+
+.strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.strategy-card {
+  background: var(--color-surface-2);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  cursor: pointer;
+  transition: all var(--transition-base) var(--ease-out);
+  position: relative;
+}
+
+.strategy-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.strategy-card.selected.lean {
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 1px var(--color-success);
+}
+
+.strategy-card.selected.standard {
+  border-color: var(--color-ice);
+  box-shadow: 0 0 0 1px var(--color-ice);
+}
+
+.strategy-card.selected.agressive {
+  border-color: var(--color-fire);
+  box-shadow: var(--shadow-fire);
+}
+
+.strategy-badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-700);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+  background: rgba(249, 115, 22, 0.13);
+  color: var(--color-fire);
+}
+
+.strategy-name {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-800);
+  font-size: var(--font-size-lg);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.strategy-range {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  margin-bottom: var(--space-3);
+}
+
+.strategy-stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.strategy-stat-row span {
+  color: var(--color-text-3);
+}
+
+.strategy-stat-row strong {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-700);
+  color: var(--color-text);
+}
+
+.check-icon {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-fire);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  color: #000;
+  font-weight: var(--font-weight-700);
+}
+
+.strategy-card.selected .check-icon {
+  display: flex;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CALCULATOR — Projection Cards
+   ═════════════════════════════════════════════════════════════════ */
+
+.proj-card {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.proj-period {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-600);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  color: var(--color-text-3);
+  margin-bottom: var(--space-2);
+}
+
+.proj-muscle-val {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-800);
+  font-size: var(--font-size-5xl);
+  color: var(--color-fire);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.proj-muscle-unit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  margin-bottom: var(--space-1);
+}
+
+.proj-fat-note {
+  font-size: var(--font-size-sm);
+  color: var(--color-warning);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CALCULATOR — Indicator Dots
+   ═════════════════════════════════════════════════════════════════ */
+
+.dot-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-fire);
+  flex-shrink: 0;
+}
+
+.dot.ice {
+  background: var(--color-ice);
+}
+
+.dot.gold {
+  background: var(--color-gold);
+}
+
+.dot.ok {
+  background: var(--color-success);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  .strategy-grid {
+    grid-template-columns: 1fr;
+  }
+}
