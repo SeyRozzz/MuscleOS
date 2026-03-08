@@ -109,10 +109,22 @@ const APP = (() => {
 
   function validateCalcStep(n) {
     if (n === 1) {
-      const a = safeNum('age'), h = safeNum('height'), w = safeNum('weight');
-      if (!a || a<14 || a>75) { toast('Âge invalide (14–75 ans)'); return false; }
-      if (!h || h<140 || h>220) { toast('Taille invalide (140–220 cm)'); return false; }
-      if (!w || w<40  || w>180) { toast('Poids invalide (40–180 kg)'); return false; }
+      const a = safeNum('age'), h = safeNum('height'), w = safeNum('weight'), bf = safeNum('bodyfat', 20);
+
+      // Validation stricte
+      if (!a || a < 15 || a > 75) { toast('Âge: 15-75 ans', 'error'); return false; }
+      if (!h || h < 150 || h > 220) { toast('Taille: 150-220 cm', 'error'); return false; }
+      if (!w || w < 45 || w > 180) { toast('Poids: 45-180 kg', 'error'); return false; }
+      if (bf < 5 || bf > 50) { toast('Bodyfat: 5-50%', 'error'); return false; }
+    }
+    if (n === 2) {
+      const sessions = safeNum('sessionsPerWeek', 0);
+      const duration = safeNum('sessionDuration', 0);
+      const activity = parseFloat(document.getElementById('activity')?.value) || 1.0;
+
+      if (sessions < 1 || sessions > 7) { toast('Séances: 1-7 par semaine', 'error'); return false; }
+      if (duration < 15 || duration > 180) { toast('Durée: 15-180 min par séance', 'error'); return false; }
+      if (activity < 1.2 || activity > 1.9) { toast('Activité: 1.2-1.9', 'error'); return false; }
     }
     return true;
   }

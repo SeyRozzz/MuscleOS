@@ -87,15 +87,25 @@ const ALGO = (() => {
   function calcTDEE(bmr, nap, sessions, duration, weight) {
     const baseTDEE = bmr * nap;
 
-    // Dépense calorique par séance (MET musculation ≈ 5 METs, ajusté poids)
-    const metBase = 5.0;
-    const sessionKcal = (duration / 60) * metBase * weight * 3.5 * 5 / 1000 * 60;
+    // Si pas d'entraînement, retourner juste TDEE sans training
+    if (sessions <= 0 || duration <= 0) {
+      return Math.round(baseTDEE);
+    }
 
-    // EPOC moyen = 8% de la dépense workout
-    const weeklyEpoc = sessions * sessionKcal * 0.08;
-    const dailyEpoc  = weeklyEpoc / 7;
+    // Dépense calorique d'entraînement: MET × kg × heures
+    // Entraînement en force/musculation: ~5.5 METs (modéré-vigoureux)
+    const metStrength = 5.5;
+    const hoursPerSession = duration / 60;
+    const hoursPerWeek = hoursPerSession * sessions;
+    const weeklyTrainingKcal = metStrength * weight * hoursPerWeek;
+    const dailyTrainingKcal = weeklyTrainingKcal / 7;
 
-    return Math.round(baseTDEE + dailyEpoc);
+    // EPOC (Excess Post-exercise Oxygen Consumption)
+    // Typiquement 8-15% de la dépense d'entraînement
+    const epocFactor = 0.12; // 12% = moyenne conservatrice
+    const dailyEpoc = dailyTrainingKcal * epocFactor;
+
+    return Math.round(baseTDEE + dailyTrainingKcal + dailyEpoc);
   }
 
   /* ─────────────────────────────────────────────
