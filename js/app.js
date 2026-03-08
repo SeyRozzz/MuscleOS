@@ -1377,6 +1377,122 @@ const APP = (() => {
   }
 
   /* ─────────────────────────────────────────────
+     PHASE 12: COMMUNAUTÉ / SOCIAL
+  ───────────────────────────────────────────── */
+
+  function saveProfile() {
+    const username = document.getElementById('profile-username')?.value || 'AnonymousGym';
+    const bio = document.getElementById('profile-bio')?.value || '';
+    const emoji = document.getElementById('profile-emoji')?.value || '👤';
+
+    const profile = { username, bio, emoji, createdAt: new Date().toISOString() };
+    localStorage.setItem('mos-profile', JSON.stringify(profile));
+
+    // Update avatar display
+    document.getElementById('profile-avatar').textContent = emoji;
+
+    alert('✓ Profil sauvegardé!');
+  }
+
+  function loadProfile() {
+    const stored = localStorage.getItem('mos-profile');
+    const profile = stored ? JSON.parse(stored) : { username: '', bio: '', emoji: '👤' };
+
+    document.getElementById('profile-username').value = profile.username;
+    document.getElementById('profile-bio').value = profile.bio;
+    document.getElementById('profile-emoji').value = profile.emoji;
+    document.getElementById('profile-avatar').textContent = profile.emoji;
+
+    return profile;
+  }
+
+  function generateShareLink() {
+    const progIdx = document.getElementById('share-program')?.value;
+    if (!progIdx) { alert('Sélectionne un programme'); return; }
+
+    const prog = Object.values(DATA.PROGRAM_TEMPLATES)[progIdx];
+    if (!prog) return;
+
+    const shareCode = btoa(JSON.stringify({ prog: prog.name, data: prog })).substring(0,50).replace(/\+/g,'-').replace(/\//g,'_');
+    const link = `${location.origin}/?share=${shareCode}`;
+
+    document.getElementById('share-link').value = link;
+    document.getElementById('share-link-box').style.display = 'block';
+  }
+
+  function copyShareLink() {
+    const link = document.getElementById('share-link');
+    link.select();
+    document.execCommand('copy');
+    alert('✓ Lien copié!');
+  }
+
+  function addFriend() {
+    const code = document.getElementById('friend-code')?.value?.trim();
+    if (!code) { alert('Colle un code d\'ami'); return; }
+
+    let friends = JSON.parse(localStorage.getItem('mos-friends') || '[]');
+    if (friends.find(f => f.code === code)) { alert('Ami déjà ajouté!'); return; }
+
+    const friend = { code, addedAt: new Date().toISOString() };
+    friends.push(friend);
+    localStorage.setItem('mos-friends', JSON.stringify(friends));
+
+    document.getElementById('friend-code').value = '';
+    renderFriends();
+    alert('✓ Ami ajouté!');
+  }
+
+  function renderFriends() {
+    const friends = JSON.parse(localStorage.getItem('mos-friends') || '[]');
+    const container = document.getElementById('friends-list');
+
+    if (friends.length === 0) {
+      container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:32px; color:var(--text3);">Aucun ami encore. Ajoute-en!</div>';
+      return;
+    }
+
+    container.innerHTML = friends.map((f, i) => `
+      <div class="friend-card">
+        <div class="friend-avatar">👥</div>
+        <div class="friend-name">Ami #${i+1}</div>
+        <div class="friend-bio" title="${f.code}">${f.code.substring(0,15)}...</div>
+        <button class="btn btn-ghost btn-sm" onclick="APP.removeFriend(${i})" style="width:100%; margin-top:8px;">❌ Retirer</button>
+      </div>
+    `).join('');
+
+    document.querySelector('[data-tab="friends"]').textContent = `👥 Amis (${friends.length})`;
+    document.getElementById('profile-friends').textContent = friends.length;
+  }
+
+  function removeFriend(idx) {
+    let friends = JSON.parse(localStorage.getItem('mos-friends') || '[]');
+    friends.splice(idx, 1);
+    localStorage.setItem('mos-friends', JSON.stringify(friends));
+    renderFriends();
+  }
+
+  function initCommunityTabs() {
+    document.querySelectorAll('.community-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Deactivate all
+        document.querySelectorAll('.community-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.community-tab-content').forEach(c => c.style.display = 'none');
+
+        // Activate clicked
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        const content = document.getElementById(`tab-${tab}`);
+        if (content) content.style.display = 'block';
+      });
+    });
+
+    // Load initial data
+    loadProfile();
+    renderFriends();
+  }
+
+  /* ─────────────────────────────────────────────
      INIT GLOBAL
   ───────────────────────────────────────────── */
   function init() {
@@ -1427,6 +1543,9 @@ const APP = (() => {
     });
     bind('btn-export-csv', exportToCSV);
 
+    // Phase 12: Community tabs initialization
+    initCommunityTabs();
+
     // Modal
     document.getElementById('modal-close')?.addEventListener('click', closeModal);
     document.getElementById('modal-overlay')?.addEventListener('click', e => {
@@ -1467,6 +1586,6 @@ const APP = (() => {
   else init();
 
   // API publique
-  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()), switchView, exportToCSV };
+  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()), switchView, exportToCSV, saveProfile, loadProfile, addFriend, removeFriend, renderFriends, generateShareLink, copyShareLink };
 
 })();

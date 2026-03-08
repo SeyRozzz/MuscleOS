@@ -78,6 +78,10 @@
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="9" r="5"/><path d="M8 6v3M6 2h4"/></svg>
         Timer
       </button>
+      <button class="nav-btn" data-page="community" aria-label="Communauté">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="2"/><circle cx="11" cy="5" r="2"/><path d="M3 11a4 4 0 014-4h2a4 4 0 014 4v1h-10v-1z"/></svg>
+        Communauté
+      </button>
       <button class="nav-btn" data-page="account" aria-label="Compte">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="2.5"/><path d="M3 13a5 5 0 0110 0"/></svg>
         Compte
@@ -462,6 +466,105 @@
           <span>🏋️ Force &nbsp;— <strong>3–5 min</strong></span>
           <span>💪 Masse &nbsp;— <strong>1:30–2 min</strong></span>
           <span>🔥 Cardio — <strong>30–60s</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 12: COMMUNAUTÉ / SOCIAL PAGE -->
+  <div class="page" id="page-community" role="main">
+    <div class="page-container">
+      <div class="page-hero">
+        <div class="page-eyebrow">👥 Communauté MuscleOS</div>
+        <h1 class="page-title">Communauté<br><span>connectée</span></h1>
+        <p class="page-sub">Partage tes programmes, suis tes amis, découvre des séances.</p>
+      </div>
+
+      <!-- TABS: Profil | Amis | Feed -->
+      <div style="display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+        <button class="community-tab active" data-tab="profile">👤 Mon profil</button>
+        <button class="community-tab" data-tab="friends">👥 Amis ({count})</button>
+        <button class="community-tab" data-tab="feed">📰 Feed</button>
+        <button class="community-tab" data-tab="share">🔗 Partager</button>
+      </div>
+
+      <!-- TAB: PROFILE -->
+      <div id="tab-profile" class="community-tab-content" style="display:block;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Mon profil</div></div></div>
+          <div style="display:grid; grid-template-columns:1fr 2fr; gap:20px; align-items:start;">
+            <div style="text-align:center;">
+              <div id="profile-avatar" style="width:100px; height:100px; border-radius:50%; background:var(--fire-dim); display:flex; align-items:center; justify-content:center; font-size:3rem; margin:0 auto 12px;">👤</div>
+              <input type="text" id="profile-username" style="text-align:center; background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); font-weight:600; margin-bottom:8px; width:100%;" placeholder="Ton pseudo">
+            </div>
+            <div>
+              <div class="form-group">
+                <label class="field-label" for="profile-bio">Bio (max 200 caractères)</label>
+                <textarea id="profile-bio" style="background:var(--surface2); border:1px solid var(--border); padding:12px; border-radius:var(--r-md); color:var(--text); font-family:var(--font-body); resize:vertical; min-height:80px;" placeholder="Dis-moi un peu sur toi..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="field-label">Emoji (avatar)</label>
+                <input type="text" id="profile-emoji" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md);" maxlength="2" placeholder="😎" value="👤">
+              </div>
+              <button class="btn btn-primary" onclick="APP.saveProfile()">💾 Sauvegarder</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Statistiques</div></div></div>
+          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
+            <div style="background:var(--surface2); padding:12px; border-radius:var(--r-md); text-align:center;">
+              <div style="font-size:1.5rem; font-weight:700; color:var(--fire);" id="profile-sessions">0</div>
+              <div style="font-size:0.8rem; color:var(--text3);">Séances</div>
+            </div>
+            <div style="background:var(--surface2); padding:12px; border-radius:var(--r-md); text-align:center;">
+              <div style="font-size:1.5rem; font-weight:700; color:var(--fire);" id="profile-friends">0</div>
+              <div style="font-size:0.8rem; color:var(--text3);">Amis</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: FRIENDS -->
+      <div id="tab-friends" class="community-tab-content" style="display:none;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Mes amis</div><div class="card-sub">Ajoute des amis par leur code.</div></div></div>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:8px; margin-bottom:16px;">
+            <input type="text" id="friend-code" placeholder="Colle le code d'ami d'un copain..." style="background:var(--surface2); border:1px solid var(--border); padding:10px; border-radius:var(--r-md);">
+            <button class="btn btn-primary" onclick="APP.addFriend()">➕ Ajouter</button>
+          </div>
+          <div id="friends-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px;"></div>
+        </div>
+      </div>
+
+      <!-- TAB: FEED -->
+      <div id="tab-feed" class="community-tab-content" style="display:none;">
+        <div id="feed-list" style="display:grid; gap:12px;"></div>
+      </div>
+
+      <!-- TAB: SHARE -->
+      <div id="tab-share" class="community-tab-content" style="display:none;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Partager un programme</div></div></div>
+
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="field-label">Programme à partager</label>
+            <select id="share-program" style="background:var(--surface2); border:1px solid var(--border); padding:10px; border-radius:var(--r-md); color:var(--text);">
+              <option value="">-- Sélectionne un programme --</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary btn-lg" onclick="APP.generateShareLink()" style="width:100%; margin-bottom:20px;">🔗 Générer lien de partage</button>
+
+          <div id="share-link-box" style="display:none; background:var(--surface2); padding:16px; border-radius:var(--r-md); border-left:3px solid var(--fire);">
+            <div style="font-size:0.8rem; color:var(--text3); margin-bottom:8px;">Lien de partage (copie-le):</div>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="share-link" readonly style="flex:1; background:var(--surface); border:1px solid var(--border); padding:10px; border-radius:var(--r-md); font-family:monospace; font-size:0.75rem; color:var(--text);">
+              <button class="btn btn-secondary" onclick="APP.copyShareLink()">📋 Copier</button>
+            </div>
+          </div>
         </div>
       </div>
 
