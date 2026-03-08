@@ -40,7 +40,6 @@ const DATA = (() => {
     { id:'e01', name:'Développé couché', muscle:'chest', icon:'🏋️',
       secondary:['triceps','shoulders'], difficulty:'intermediaire',
       equipment:'Barre + banc', sets:'3–5', reps:'6–12', rest:120,
-      video:'jQmiNL7n5LI', // YouTube ID - "Perfect Bench Press Form"
       images:['https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop', 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=300&fit=crop'],
       steps:[
         { t:'Position', d:'Allonge-toi sur le banc, pieds à plat au sol. Barre au-dessus de la poitrine, prise légèrement plus large que les épaules.' },
@@ -53,7 +52,6 @@ const DATA = (() => {
     { id:'e02', name:'Développé incliné haltères', muscle:'chest', icon:'🏋️',
       secondary:['shoulders','triceps'], difficulty:'intermediaire',
       equipment:'Haltères + banc incliné', sets:'3–4', reps:'8–15', rest:90,
-      video:'H-Yc95BrQ20', // "Incline Dumbbell Press"
       images:['https://images.unsplash.com/photo-1517836357463-d25ddfcbf042?w=400&h=300&fit=crop'],
       steps:[
         { t:'Angle', d:'Banc à 30-45°. Plus l\'angle est faible, plus tu cibles le haut des pectoraux.' },
@@ -66,7 +64,6 @@ const DATA = (() => {
     { id:'e03', name:'Écarté aux haltères', muscle:'chest', icon:'💪',
       secondary:[], difficulty:'debutant',
       equipment:'Haltères + banc', sets:'3', reps:'12–15', rest:75,
-      video:'eoOcjqJl3nk', // "Dumbbell Flyes"
       images:['https://images.unsplash.com/photo-1566126282023-fa5acbf1c8a1?w=400&h=300&fit=crop'],
       steps:[
         { t:'Départ', d:'Allongé sur banc plat, haltères au-dessus de la poitrine, paumes face à face. Légère flexion des coudes.' },
@@ -110,7 +107,6 @@ const DATA = (() => {
     { id:'e06', name:'Tractions (Pull-ups)', muscle:'back', icon:'🤸',
       secondary:['biceps'], difficulty:'intermediaire',
       equipment:'Barre de traction', sets:'3–5', reps:'5–12', rest:120,
-      video:'27FJ1pucFc0', // "Perfect Pull-up Form"
       images:['https://images.unsplash.com/photo-1552707256-5b5c1ba81de1?w=400&h=300&fit=crop'],
       steps:[
         { t:'Prise', d:'Prise pronation (paumes vers l\'avant), légèrement plus large que les épaules.' },
@@ -123,7 +119,6 @@ const DATA = (() => {
     { id:'e07', name:'Rowing barre', muscle:'back', icon:'🏋️',
       secondary:['biceps','rear-delts'], difficulty:'intermediaire',
       equipment:'Barre', sets:'3–4', reps:'8–12', rest:90,
-      video:'Bq4SyBAT5GA', // "Barbell Rowing Form"
       images:['https://images.unsplash.com/photo-1598971457318-b3d1e678e53d?w=400&h=300&fit=crop'],
       steps:[
         { t:'Position', d:'Penché à ~45°, dos plat, genoux légèrement fléchis. Barre prise en pronation sous les épaules.' },
@@ -167,7 +162,6 @@ const DATA = (() => {
     { id:'e09', name:'Développé militaire', muscle:'shoulders', icon:'🏋️',
       secondary:['triceps'], difficulty:'intermediaire',
       equipment:'Barre ou haltères', sets:'3–5', reps:'6–12', rest:120,
-      video:'2IfsKlqJKOw', // "Military Press Perfect Form"
       images:['https://images.unsplash.com/photo-1597594057306-201ebd8d7c9f?w=400&h=300&fit=crop'],
       steps:[
         { t:'Position debout', d:'Barre à hauteur des clavicules, prise légèrement plus large que les épaules. Abdos contractés.' },
@@ -221,7 +215,6 @@ const DATA = (() => {
     { id:'e12', name:'Curl barre', muscle:'biceps', icon:'💪',
       secondary:[], difficulty:'debutant',
       equipment:'Barre EZ ou droite', sets:'3–4', reps:'10–15', rest:75,
-      video:'owSuAlsmaC4', // "Perfect Barbell Curl Form"
       images:['https://images.unsplash.com/photo-1535743686920-55e06d675f3e?w=400&h=300&fit=crop'],
       steps:[
         { t:'Position', d:'Debout, barre prise en supination (paumes vers le haut), bras tendus. Coudes contre le corps.' },

@@ -349,6 +349,7 @@
         <button class="view-toggle active" data-view="jour" id="toggle-jour">📅 Jour</button>
         <button class="view-toggle" data-view="semaine" id="toggle-semaine">📊 Semaine</button>
         <button class="view-toggle" data-view="mois" id="toggle-mois">📈 Mois</button>
+        <button class="view-toggle" data-view="analytics" id="toggle-analytics">🔬 Analytics</button>
         <button class="btn btn-sm" id="btn-export-csv" style="margin-left:auto;">⬇️ Exporter CSV</button>
       </div>
 
@@ -375,6 +376,53 @@
         <div class="chart-legend">
           <div class="chart-legend-item"><div class="legend-dot" style="background:var(--fire)"></div>Charge (kg)</div>
           <div class="chart-legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Record personnel (PR)</div>
+        </div>
+      </div>
+
+      <!-- PHASE 13: ANALYTICS AVANCÉES -->
+      <div id="analytics-container" style="display:none;">
+        <!-- 1RM CALCULATOR -->
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">🏋️ Calculateur 1RM (Max théorique)</div><div class="card-sub">Formule Epley: 1RM = Poids × (1 + Reps / 30)</div></div></div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px;">
+            <div class="form-group">
+              <label class="field-label">Poids levé (kg)</label>
+              <input type="number" id="1rm-weight" placeholder="80" min="0" max="500" step="0.5" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Répétitions</label>
+              <input type="number" id="1rm-reps" placeholder="5" min="1" max="50" step="1" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+          </div>
+          <div id="1rm-result" style="margin-top:16px; background:var(--surface2); padding:16px; border-radius:var(--r-md); text-align:center; border-left:3px solid var(--fire); display:none;">
+            <div style="font-size:0.8rem; color:var(--text3);">1RM ESTIMÉ</div>
+            <div style="font-size:2rem; font-weight:700; color:var(--fire);" id="1rm-value">—</div>
+            <div style="font-size:0.8rem; color:var(--text3); margin-top:4px;">kg</div>
+          </div>
+          <button class="btn btn-primary" onclick="APP.calculate1RM()" style="width:100%; margin-top:12px;">⚡ Calculer</button>
+        </div>
+
+        <!-- TONNAGE TRACKING -->
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">📊 Volume total (Tonnage)</div><div class="card-sub">Évolution du volume soulevé au fil du temps</div></div></div>
+          <canvas id="tonnage-chart" width="900" height="250"></canvas>
+        </div>
+
+        <!-- BODYFAT TRACKER -->
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">📏 Suivi Bodyfat %</div><div class="card-sub">Enregistre ton bodyfat pour suivre ta recomposition</div></div></div>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:8px; margin-bottom:16px;">
+            <input type="number" id="bodyfat-input" placeholder="20" min="0" max="50" step="0.1" style="background:var(--surface2); border:1px solid var(--border); padding:10px; border-radius:var(--r-md); color:var(--text);">
+            <button class="btn btn-primary" onclick="APP.addBodyfat()">➕ Ajouter</button>
+          </div>
+          <canvas id="bodyfat-chart" width="900" height="250"></canvas>
+          <div id="bodyfat-list" style="margin-top:16px; display:grid; gap:8px;"></div>
+        </div>
+
+        <!-- EXERCISE STATS -->
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">🎯 Top 10 Exercices (par tonnage)</div></div></div>
+          <div id="top-exercises" style="display:grid; gap:8px;"></div>
         </div>
       </div>
 

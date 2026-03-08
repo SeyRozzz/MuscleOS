@@ -1112,6 +1112,11 @@ const APP = (() => {
     // Show/hide heatmap
     const heatmap = document.getElementById('heatmap-container');
     if (heatmap) heatmap.style.display = view === 'semaine' ? 'block' : 'none';
+
+    // Show/hide analytics
+    const analytics = document.getElementById('analytics-container');
+    if (analytics) analytics.style.display = view === 'analytics' ? 'block' : 'none';
+
     renderLogbookView();
   }
 
@@ -1122,6 +1127,8 @@ const APP = (() => {
       renderWeekView();
     } else if (currentView === 'mois') {
       renderMonthView();
+    } else if (currentView === 'analytics') {
+      renderAnalyticsView();
     }
   }
 
@@ -1493,6 +1500,303 @@ const APP = (() => {
   }
 
   /* ─────────────────────────────────────────────
+     PHASE 13: ANALYTICS AVANCÉES
+  ───────────────────────────────────────────── */
+
+  function calculate1RM() {
+    const weight = safeNum('1rm-weight', 0);
+    const reps = safeNum('1rm-reps', 1);
+
+    if (weight <= 0 || reps <= 0) {
+      toast('Remplis poids et reps', 'error');
+      return;
+    }
+
+    // Formule Epley: 1RM = Poids × (1 + Reps / 30)
+    const oneRM = weight * (1 + reps / 30);
+
+    const resultEl = document.getElementById('1rm-result');
+    const valueEl = document.getElementById('1rm-value');
+
+    if (resultEl && valueEl) {
+      valueEl.textContent = oneRM.toFixed(1);
+      resultEl.style.display = 'block';
+    }
+
+    toast(`1RM estimé: ${oneRM.toFixed(1)} kg`, 'ok');
+  }
+
+  function addBodyfat() {
+    const input = document.getElementById('bodyfat-input');
+    if (!input || input.value === '') {
+      toast('Remplis le % bodyfat', 'error');
+      return;
+    }
+
+    const bodyfat = parseFloat(input.value);
+    if (isNaN(bodyfat) || bodyfat < 0 || bodyfat > 50) {
+      toast('% bodyfat invalide (0-50)', 'error');
+      return;
+    }
+
+    // Charger données existantes
+    let bodyfatHistory = JSON.parse(localStorage.getItem('mos-bodyfat') || '[]');
+
+    // Ajouter nouvelle entrée
+    bodyfatHistory.push({
+      date: new Date().toISOString().split('T')[0],
+      bodyfat: bodyfat,
+      timestamp: Date.now()
+    });
+
+    // Garder les 100 dernières entrées
+    bodyfatHistory = bodyfatHistory.slice(-100);
+
+    localStorage.setItem('mos-bodyfat', JSON.stringify(bodyfatHistory));
+
+    input.value = '';
+    renderBodyfatChart();
+    renderBodyfatList();
+    toast('✓ Bodyfat enregistré', 'ok');
+  }
+
+  function removeBodyfat(idx) {
+    let bodyfatHistory = JSON.parse(localStorage.getItem('mos-bodyfat') || '[]');
+    bodyfatHistory.splice(idx, 1);
+    localStorage.setItem('mos-bodyfat', JSON.stringify(bodyfatHistory));
+    renderBodyfatChart();
+    renderBodyfatList();
+  }
+
+  function renderBodyfatList() {
+    const list = document.getElementById('bodyfat-list');
+    if (!list) return;
+
+    let bodyfatHistory = JSON.parse(localStorage.getItem('mos-bodyfat') || '[]');
+
+    if (!bodyfatHistory.length) {
+      list.innerHTML = '<div style="text-align:center; color:var(--text3); padding:16px;">Aucune donnée</div>';
+      return;
+    }
+
+    // Afficher les 10 dernières, inversé (plus recent en premier)
+    list.innerHTML = bodyfatHistory.slice(-10).reverse().map((entry, i) => `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:12px; border-radius:var(--r-md);">
+        <div>
+          <div style="font-weight:600; color:var(--fire);">${entry.bodyfat.toFixed(1)}%</div>
+          <div style="font-size:0.75rem; color:var(--text3);">${entry.date}</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="APP.removeBodyfat(${bodyfatHistory.length - i - 1})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function renderBodyfatChart() {
+    const canvas = document.getElementById('bodyfat-chart');
+    if (!canvas || !canvas.getContext) return;
+
+    let bodyfatHistory = JSON.parse(localStorage.getItem('mos-bodyfat') || '[]');
+    if (!bodyfatHistory.length) {
+      canvas.style.background = 'var(--surface2)';
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'var(--text3)';
+      ctx.font = '14px DM Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('Aucune donnée', canvas.width / 2, canvas.height / 2);
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const padding = 40;
+    const graphW = w - 2 * padding;
+    const graphH = h - 2 * padding;
+
+    // Points
+    const data = bodyfatHistory.slice(-30);
+    const minBF = Math.min(...data.map(d => d.bodyfat));
+    const maxBF = Math.max(...data.map(d => d.bodyfat));
+    const range = Math.max(maxBF - minBF, 5);
+
+    // Élément background
+    ctx.fillStyle = '#ffffff05';
+    ctx.fillRect(0, 0, w, h);
+
+    // Axe X et Y
+    ctx.strokeStyle = 'var(--border)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(padding, h - padding);
+    ctx.lineTo(w - padding, h - padding);
+    ctx.stroke();
+
+    // Labels et grid
+    ctx.fillStyle = 'var(--text3)';
+    ctx.font = '11px DM Sans';
+    ctx.textAlign = 'center';
+
+    // Points ligne
+    ctx.strokeStyle = 'var(--fire)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    data.forEach((d, i) => {
+      const x = padding + (i / (data.length - 1 || 1)) * graphW;
+      const y = h - padding - ((d.bodyfat - minBF) / range) * graphH;
+
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+
+    ctx.stroke();
+
+    // Points cercles
+    ctx.fillStyle = 'var(--fire)';
+    data.forEach((d, i) => {
+      const x = padding + (i / (data.length - 1 || 1)) * graphW;
+      const y = h - padding - ((d.bodyfat - minBF) / range) * graphH;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+  }
+
+  function renderTonnageChart() {
+    const canvas = document.getElementById('tonnage-chart');
+    if (!canvas || !canvas.getContext) return;
+
+    const log = state.logbook;
+    if (!log.length) {
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'var(--text3)';
+      ctx.font = '14px DM Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('Aucune donnée', canvas.width / 2, canvas.height / 2);
+      return;
+    }
+
+    // Grouper par jour
+    const dayMap = {};
+    log.forEach(e => {
+      const d = e.date; // DD-MM-YYYY
+      if (!dayMap[d]) dayMap[d] = 0;
+      dayMap[d] += e.weight * e.reps * e.sets;
+    });
+
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const padding = 40;
+    const graphW = w - 2 * padding;
+    const graphH = h - 2 * padding;
+
+    // Last 30 days
+    const dates = Object.keys(dayMap).slice(-30);
+    const tonnages = dates.map(d => dayMap[d] / 1000); // tonnes
+    const maxT = Math.max(...tonnages);
+
+    // Background
+    ctx.fillStyle = '#ffffff05';
+    ctx.fillRect(0, 0, w, h);
+
+    // Axes
+    ctx.strokeStyle = 'var(--border)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(padding, h - padding);
+    ctx.lineTo(w - padding, h - padding);
+    ctx.stroke();
+
+    // Barres
+    ctx.fillStyle = 'var(--ice)';
+    dates.forEach((d, i) => {
+      const x = padding + (i / dates.length) * graphW;
+      const barW = graphW / dates.length - 2;
+      const barH = (tonnages[i] / maxT) * graphH;
+      const y = h - padding - barH;
+
+      ctx.fillRect(x, y, barW, barH);
+    });
+
+    // Labels
+    ctx.fillStyle = 'var(--text3)';
+    ctx.font = '10px DM Sans';
+    ctx.textAlign = 'center';
+
+    // Y-axis labels
+    for (let i = 0; i <= 4; i++) {
+      const val = (maxT * i / 4).toFixed(1);
+      const y = h - padding - (i / 4) * graphH;
+      ctx.fillText(val + 't', padding - 20, y + 3);
+    }
+  }
+
+  function renderTopExercises() {
+    const container = document.getElementById('top-exercises');
+    if (!container) return;
+
+    const log = state.logbook;
+    if (!log.length) {
+      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Aucune donnée</div>';
+      return;
+    }
+
+    // Calculer tonnage par exo
+    const exoTonnage = {};
+    log.forEach(e => {
+      if (!exoTonnage[e.exoId]) {
+        exoTonnage[e.exoId] = { name: e.exoName, tonnage: 0, count: 0 };
+      }
+      exoTonnage[e.exoId].tonnage += e.weight * e.reps * e.sets;
+      exoTonnage[e.exoId].count++;
+    });
+
+    // Trier et top 10
+    const sorted = Object.values(exoTonnage)
+      .sort((a, b) => b.tonnage - a.tonnage)
+      .slice(0, 10);
+
+    const maxTon = sorted[0]?.tonnage || 1;
+
+    container.innerHTML = sorted.map((exo, rank) => {
+      const pct = (exo.tonnage / maxTon) * 100;
+      return `
+        <div style="padding:12px; background:var(--surface2); border-radius:var(--r-md); border-left:3px solid var(--fire);">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-weight:600;">#${rank+1} ${esc(exo.name)}</span>
+            <span style="color:var(--fire); font-weight:700;">${(exo.tonnage/1000).toFixed(1)}t</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:8px; font-size:0.75rem; color:var(--text3);">
+            <div style="background:var(--ice); height:4px; border-radius:2px; overflow:hidden;">
+              <div style="background:var(--fire); height:100%; width:${pct}%;"></div>
+            </div>
+            <span>${exo.count} séries</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderAnalyticsView() {
+    const container = document.getElementById('analytics-container');
+    if (!container) return;
+
+    container.style.display = 'block';
+
+    // Render all charts/stats
+    setTimeout(() => {
+      renderBodyfatChart();
+      renderTonnageChart();
+      renderTopExercises();
+      renderBodyfatList();
+    }, 100);
+  }
+
+  /* ─────────────────────────────────────────────
      INIT GLOBAL
   ───────────────────────────────────────────── */
   function init() {
@@ -1586,6 +1890,6 @@ const APP = (() => {
   else init();
 
   // API publique
-  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()), switchView, exportToCSV, saveProfile, loadProfile, addFriend, removeFriend, renderFriends, generateShareLink, copyShareLink };
+  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()), switchView, exportToCSV, saveProfile, loadProfile, addFriend, removeFriend, renderFriends, generateShareLink, copyShareLink, calculate1RM, addBodyfat, removeBodyfat, renderBodyfatChart, renderBodyfatList, renderTonnageChart, renderTopExercises, renderAnalyticsView };
 
 })();
