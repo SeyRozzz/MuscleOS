@@ -1,0 +1,316 @@
+/**
+ * MuscleOS App-Generated Components Styles
+ * Styles for HTML generated dynamically by JavaScript
+ * Reduces inline style attributes in app.js
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   MODAL — Exercise Details
+   ═════════════════════════════════════════════════════════════════ */
+
+.modal-video-section {
+  margin-bottom: var(--space-6);
+}
+
+.modal-video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-3);
+  background: var(--color-surface-2);
+}
+
+.modal-video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.modal-image-gallery {
+  margin-bottom: var(--space-6);
+}
+
+.modal-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.modal-image-grid img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform var(--transition-fast) var(--ease-out);
+  user-select: none;
+}
+
+.modal-image-grid img:hover {
+  transform: scale(1.05);
+}
+
+.modal-image-grid img.zoomed {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.5);
+  z-index: 9999;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8);
+}
+
+.exo-meta-tags {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.exo-meta-tag {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.exo-difficulty-inline {
+  position: static;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MODALS — Sections and Containers
+   ═════════════════════════════════════════════════════════════════ */
+
+.modal-section {
+  margin-bottom: var(--space-6);
+}
+
+.modal-section-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-600);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  color: var(--color-text-3);
+  margin-bottom: var(--space-3);
+}
+
+.modal-action-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PROGRAM GENERATOR — Program Cards
+   ═════════════════════════════════════════════════════════════════ */
+
+.program-focus-box {
+  background: var(--color-surface-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-6);
+  border-left: 3px solid var(--color-fire);
+}
+
+.program-focus-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  margin-bottom: var(--space-1);
+  font-weight: var(--font-weight-600);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.program-focus-text {
+  font-weight: var(--font-weight-600);
+  color: var(--color-text);
+}
+
+.program-day-notes {
+  font-size: var(--font-size-xs);
+  color: var(--color-fire);
+  margin-bottom: var(--space-3);
+  padding: var(--space-2);
+  background: rgba(249, 115, 22, 0.1);
+  border-radius: var(--radius-md);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LOGBOOK & ANALYTICS — Table Styling
+   ═════════════════════════════════════════════════════════════════ */
+
+.logbook-cell-secondary {
+  color: var(--color-text-3);
+  font-size: var(--font-size-sm);
+}
+
+.logbook-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.logbook-stat-card {
+  background: var(--color-surface-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.logbook-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-3);
+  margin-bottom: var(--space-1);
+  font-weight: var(--font-weight-600);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.logbook-stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-800);
+  color: var(--color-fire);
+  font-family: var(--font-family-display);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FORMS — Input Groups
+   ═════════════════════════════════════════════════════════════════ */
+
+.form-input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.form-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-input-field {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+}
+
+.form-input-field:focus {
+  outline: none;
+  border-color: var(--color-fire);
+  box-shadow: 0 0 0 3px var(--color-fire-dim);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESULTS & DISPLAYS — 1RM Calculator
+   ═════════════════════════════════════════════════════════════════ */
+
+.result-box {
+  margin-top: var(--space-4);
+  background: var(--color-surface-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  text-align: center;
+  border-left: 3px solid var(--color-fire);
+  display: none;
+}
+
+.result-box.visible {
+  display: block;
+}
+
+.result-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  font-weight: var(--font-weight-600);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+.result-value {
+  font-size: 2rem;
+  font-weight: var(--font-weight-700);
+  color: var(--color-fire);
+  font-family: var(--font-family-display);
+  line-height: var(--line-height-tight);
+}
+
+.result-unit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  margin-top: var(--space-2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HEATMAP & CHARTS
+   ═════════════════════════════════════════════════════════════════ */
+
+.logbook-heatmap-container {
+  display: none;
+  margin-bottom: var(--space-8);
+}
+
+.logbook-heatmap-container.visible {
+  display: block;
+}
+
+.logbook-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+  padding: var(--space-6);
+}
+
+.heatmap-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-600);
+  cursor: pointer;
+  transition: all var(--transition-fast) var(--ease-out);
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  .logbook-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-input-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .exo-meta-tags {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}
