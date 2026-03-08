@@ -294,7 +294,7 @@ const APP = (() => {
       <tr>
         <td><span class="dot-indicator"><span class="dot ${esc(r.dot||'')}"></span>${esc(r.moment)}</span></td>
         <td><strong>${esc(r.amount)}g</strong> ${r.scoops>0?`(${r.scoops} scoop${r.scoops>1?'s':''})`:'(alim.)'}</td>
-        <td style="color:var(--text3);font-size:0.8em">${r.advice}</td>
+        <td class="logbook-table-advice">${r.advice}</td>
       </tr>`).join('');
   }
 
@@ -421,7 +421,7 @@ const APP = (() => {
 
     document.getElementById('modal-title').textContent = e.name;
     document.getElementById('modal-body').innerHTML = `
-      <div class="modal-image flex items-center justify-center w-full rounded bg-surface-2 mb-6" style="height:240px;">
+      <div class="modal-image flex items-center justify-center w-full rounded bg-surface-2 mb-6 modal-image-height">
         <img
           src="${e.images && e.images[0] ? e.images[0] : 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=300&fit=crop'}"
           alt="${esc(e.name)}"
@@ -515,14 +515,14 @@ const APP = (() => {
 
     // Afficher focus global (avant le HTML des jours)
     const focusHTML = `
-      <div style="background:var(--surface2); padding:12px; border-radius:var(--r-lg); margin-bottom:20px; border-left:3px solid var(--fire);">
-        <div style="font-size:0.85rem; color:var(--text3); margin-bottom:4px;">📌 FOCUS</div>
-        <div style="font-weight:600; color:var(--text);">${prog.focus || prog.description}</div>
+      <div class="program-focus-box">
+        <div class="program-focus-label">📌 FOCUS</div>
+        <div class="program-focus-text">${prog.focus || prog.description}</div>
       </div>`;
 
     // Render chaque jour
     const daysHTML = prog.days.map((day, di) => {
-      const dayNotes = day.notes ? `<div style="font-size:0.75rem; color:var(--fire); margin-bottom:12px; padding:8px; background:rgba(249,115,22,0.1); border-radius:var(--r-md);">${day.notes}</div>` : '';
+      const dayNotes = day.notes ? `<div class="program-day-notes">${day.notes}</div>` : '';
 
       return `
       <div class="prog-day ${di===0?'open':''}" id="pday-${di}">
@@ -540,26 +540,26 @@ const APP = (() => {
           ${day.exos.map((ex, ei) => {
             const e = DATA.getExercise(ex.id);
             if (!e) return '';
-            const tempo = ex.tempo ? `<div style="font-size:0.7rem; color:var(--text3);">⏱️ ${ex.tempo}</div>` : '';
-            const exoNotes = ex.notes ? `<div style="font-size:0.72rem; color:var(--ice); margin-top:4px;">${ex.notes}</div>` : '';
+            const tempo = ex.tempo ? `<div class="logbook-exercise-tempo">⏱️ ${ex.tempo}</div>` : '';
+            const exoNotes = ex.notes ? `<div class="logbook-exercise-notes">${ex.notes}</div>` : '';
             return `
-              <div style="border-bottom:1px solid var(--border); padding:12px 0; ${ei === day.exos.length - 1 ? 'border-bottom:none;' : ''}">
+              <div class="logbook-exercise-entry ${ei === day.exos.length - 1 ? 'last' : ''}">
                 <div class="exo-row">
                   <div class="exo-row-icon">${e.icon}</div>
-                  <div class="exo-row-info" style="flex:1;">
+                  <div class="logbook-row-info">
                     <div class="exo-row-name">${esc(e.name)}</div>
-                    <div class="exo-row-detail" style="font-size:0.7rem;">${esc(e.equipment)}</div>
+                    <div class="logbook-row-detail">${esc(e.equipment)}</div>
                     ${tempo}
                   </div>
-                  <div style="text-align:right;">
+                  <div class="logbook-exercise-rest">
                     <div class="exo-row-sets">${ex.sets}×${esc(ex.reps)}</div>
-                    <div style="font-size:0.7rem; color:var(--text3); margin-top:2px;">${ex.rest}s repos</div>
+                    <div class="logbook-exercise-rest-value">${ex.rest}s repos</div>
                   </div>
                 </div>
                 ${exoNotes}
               </div>`;
           }).join('')}
-          <div style="margin-top:16px;display:flex;gap:6px;flex-wrap:wrap;">
+          <div class="logbook-exercise-buttons">
             ${day.exos.map(ex => {
               const e = DATA.getExercise(ex.id);
               if (!e) return '';
@@ -1164,7 +1164,7 @@ const APP = (() => {
     if (!tbody) return;
 
     if (!state.logbook.length) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text3)">Aucune séance enregistrée</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="empty-logbook-message">Aucune séance enregistrée</td></tr>`;
       renderStatsCards();
       renderChart();
       return;
@@ -1293,21 +1293,21 @@ const APP = (() => {
         <div class="weekly-stat">
           <span class="weekly-stat-value">⏰</span>
           <span class="weekly-stat-label">Séances</span>
-          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${sessions}</span>
+          <span class="weekly-stat-large">${sessions}</span>
         </div>
         <div class="weekly-stat">
           <span class="weekly-stat-value">📦</span>
-          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${(volume/1000).toFixed(1)}t</span>
+          <span class="weekly-stat-large">${(volume/1000).toFixed(1)}t</span>
           <span class="weekly-stat-label">Volume</span>
         </div>
         <div class="weekly-stat">
           <span class="weekly-stat-value">🎯</span>
-          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${exercises}</span>
+          <span class="weekly-stat-large">${exercises}</span>
           <span class="weekly-stat-label">Exercices</span>
         </div>
         <div class="weekly-stat">
           <span class="weekly-stat-value">🔥</span>
-          <span class="weekly-stat-value" style="color:var(--text); font-size:1.2rem;">${streak}</span>
+          <span class="weekly-stat-large">${streak}</span>
           <span class="weekly-stat-label">Jours consécutifs</span>
         </div>
       </div>
@@ -1348,24 +1348,24 @@ const APP = (() => {
     const prCount = Object.keys(prs).length;
 
     const statsHtml = `
-      <div class="card" style="margin-bottom:24px;">
+      <div class="card monthly-stats-card">
         <div class="card-header"><div><div class="card-title">📊 Statistiques du mois</div></div></div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:16px;">
-          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
-            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${sessions}</div>
-            <div style="font-size:0.8rem; color:var(--text3);">SÉANCES</div>
+        <div class="monthly-stats-card">
+          <div class="monthly-stat-item">
+            <div class="monthly-stat-value">${sessions}</div>
+            <div class="monthly-stat-label">SÉANCES</div>
           </div>
-          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
-            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${(volume/1000).toFixed(1)}t</div>
-            <div style="font-size:0.8rem; color:var(--text3);">VOLUME TOTAL</div>
+          <div class="monthly-stat-item">
+            <div class="monthly-stat-value">${(volume/1000).toFixed(1)}t</div>
+            <div class="monthly-stat-label">VOLUME TOTAL</div>
           </div>
-          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
-            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${avgPerSession}t</div>
-            <div style="font-size:0.8rem; color:var(--text3);">MOY/SÉANCE</div>
+          <div class="monthly-stat-item">
+            <div class="monthly-stat-value">${avgPerSession}t</div>
+            <div class="monthly-stat-label">MOY/SÉANCE</div>
           </div>
-          <div style="text-align:center; padding:16px; background:var(--surface2); border-radius:var(--r-md);">
-            <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:6px;">${prCount}</div>
-            <div style="font-size:0.8rem; color:var(--text3);">PRS ÉTABLIS</div>
+          <div class="monthly-stat-item">
+            <div class="monthly-stat-value">${prCount}</div>
+            <div class="monthly-stat-label">PRS ÉTABLIS</div>
           </div>
         </div>
       </div>
@@ -1481,7 +1481,7 @@ const APP = (() => {
     const container = document.getElementById('friends-list');
 
     if (friends.length === 0) {
-      container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:32px; color:var(--text3);">Aucun ami encore. Ajoute-en!</div>';
+      container.innerHTML = '<div class="empty-friend-state">Aucun ami encore. Ajoute-en!</div>';
       return;
     }
 
@@ -1490,7 +1490,7 @@ const APP = (() => {
         <div class="friend-avatar">👥</div>
         <div class="friend-name">Ami #${i+1}</div>
         <div class="friend-bio" title="${f.code}">${f.code.substring(0,15)}...</div>
-        <button class="btn btn-ghost btn-sm" onclick="APP.removeFriend(${i})" style="width:100%; margin-top:8px;">❌ Retirer</button>
+        <button class="btn btn-ghost btn-sm full-width-mt" onclick="APP.removeFriend(${i})">❌ Retirer</button>
       </div>
     `).join('');
 
@@ -1601,16 +1601,16 @@ const APP = (() => {
     let bodyfatHistory = JSON.parse(localStorage.getItem('mos-bodyfat') || '[]');
 
     if (!bodyfatHistory.length) {
-      list.innerHTML = '<div style="text-align:center; color:var(--text3); padding:16px;">Aucune donnée</div>';
+      list.innerHTML = '<div class="empty-state-compact">Aucune donnée</div>';
       return;
     }
 
     // Afficher les 10 dernières, inversé (plus recent en premier)
     list.innerHTML = bodyfatHistory.slice(-10).reverse().map((entry, i) => `
-      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:12px; border-radius:var(--r-md);">
+      <div class="bodyfat-entry">
         <div>
-          <div style="font-weight:600; color:var(--fire);">${entry.bodyfat.toFixed(1)}%</div>
-          <div style="font-size:0.75rem; color:var(--text3);">${entry.date}</div>
+          <div class="bodyfat-entry-value">${entry.bodyfat.toFixed(1)}%</div>
+          <div class="bodyfat-entry-date">${entry.date}</div>
         </div>
         <button class="btn btn-ghost btn-sm" onclick="APP.removeBodyfat(${bodyfatHistory.length - i - 1})">✕</button>
       </div>
@@ -1767,7 +1767,7 @@ const APP = (() => {
 
     const log = state.logbook;
     if (!log.length) {
-      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Aucune donnée</div>';
+      container.innerHTML = '<div class="empty-state-message">Aucune donnée</div>';
       return;
     }
 
@@ -1791,14 +1791,14 @@ const APP = (() => {
     container.innerHTML = sorted.map((exo, rank) => {
       const pct = (exo.tonnage / maxTon) * 100;
       return `
-        <div style="padding:12px; background:var(--surface2); border-radius:var(--r-md); border-left:3px solid var(--fire);">
-          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-            <span style="font-weight:600;">#${rank+1} ${esc(exo.name)}</span>
-            <span style="color:var(--fire); font-weight:700;">${(exo.tonnage/1000).toFixed(1)}t</span>
+        <div class="ranking-item">
+          <div class="ranking-item-header">
+            <span class="ranking-item-name">#${rank+1} ${esc(exo.name)}</span>
+            <span class="ranking-item-value">${(exo.tonnage/1000).toFixed(1)}t</span>
           </div>
-          <div style="display:grid; grid-template-columns:1fr auto; gap:8px; font-size:0.75rem; color:var(--text3);">
-            <div style="background:var(--ice); height:4px; border-radius:2px; overflow:hidden;">
-              <div style="background:var(--fire); height:100%; width:${pct}%;"></div>
+          <div class="ranking-bar-container">
+            <div class="ranking-bar-fill-bg">
+              <div class="ranking-bar-fill" style="width:${pct}%;"></div>
             </div>
             <span>${exo.count} séries</span>
           </div>
@@ -1898,17 +1898,17 @@ const APP = (() => {
     const todayMeals = nutritionState.meals.filter(m => m.date === today);
 
     if (!todayMeals.length) {
-      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Aucun repas aujourd\'hui</div>';
+      container.innerHTML = '<div class="empty-state-message">Aucun repas aujourd\'hui</div>';
       return;
     }
 
     container.innerHTML = todayMeals.map(meal => `
-      <div style="background:var(--surface2); padding:16px; border-radius:var(--r-md); border-left:3px solid var(--fire);">
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="font-weight:600;">${esc(meal.name)}</span>
+      <div class="meal-card">
+        <div class="meal-card-header">
+          <span class="meal-name">${esc(meal.name)}</span>
           <button class="btn btn-ghost btn-sm" onclick="APP.removeMeal(${meal.id})">✕</button>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; font-size:0.8rem; color:var(--text3);">
+        <div class="meal-macros">
           <div>🔥 ${meal.calories} kcal</div>
           <div>🔴 ${meal.protein.toFixed(1)}g P</div>
           <div>🟦 ${meal.carbs.toFixed(1)}g C</div>
@@ -1982,9 +1982,9 @@ const APP = (() => {
     if (!container) return;
 
     container.innerHTML = QUICK_FOODS.map(food => `
-      <button onclick="APP.addQuickFood('${food.name.replace(/'/g, "\\'")}', ${food.cal}, ${food.protein}, ${food.carbs}, ${food.fat})" style="background:var(--surface2); border:1px solid var(--border); padding:12px; border-radius:var(--r-md); cursor:pointer; transition:all 0.2s; font-size:0.75rem;">
-        <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${food.name}</div>
-        <div style="color:var(--text3); font-size:0.7rem;">${food.cal} kcal</div>
+      <button class="food-quick-button" onclick="APP.addQuickFood('${food.name.replace(/'/g, "\\'")}', ${food.cal}, ${food.protein}, ${food.carbs}, ${food.fat})">
+        <div class="food-quick-name">${food.name}</div>
+        <div class="food-quick-calories">${food.cal} kcal</div>
       </button>
     `).join('');
   }
@@ -2053,24 +2053,24 @@ const APP = (() => {
     if (!container) return;
 
     if (!nutritionState.recipes.length) {
-      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Aucune recette sauvegardée</div>';
+      container.innerHTML = '<div class="empty-state-message">Aucune recette sauvegardée</div>';
       return;
     }
 
     container.innerHTML = nutritionState.recipes.map(recipe => `
-      <div style="background:var(--surface2); padding:16px; border-radius:var(--r-md);">
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+      <div class="recipe-card">
+        <div class="recipe-header">
           <div>
-            <div style="font-weight:600;">${esc(recipe.name)}</div>
-            <div style="font-size:0.75rem; color:var(--text3);">${recipe.servings} portion${recipe.servings > 1 ? 's' : ''}</div>
+            <div class="recipe-name">${esc(recipe.name)}</div>
+            <div class="recipe-servings">${recipe.servings} portion${recipe.servings > 1 ? 's' : ''}</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="APP.removeRecipe(${recipe.id})">✕</button>
         </div>
-        <div style="font-size:0.8rem; color:var(--text3); margin-bottom:8px;">
+        <div class="recipe-macros">
           🔴 ${recipe.macros.protein.toFixed(1)}g P | 🟦 ${recipe.macros.carbs.toFixed(1)}g C | 🟩 ${recipe.macros.fat.toFixed(1)}g L
         </div>
-        ${recipe.instructions ? `<div style="font-size:0.75rem; color:var(--text3); margin-bottom:6px; font-style:italic;">📝 Instructions sauvegardées</div>` : ''}
-        <button class="btn btn-primary btn-sm" onclick="APP.addMealFromRecipe(${recipe.id})" style="width:100%;">➕ Ajouter au repas</button>
+        ${recipe.instructions ? `<div class="recipe-instructions">📝 Instructions sauvegardées</div>` : ''}
+        <button class="btn btn-primary btn-sm full-width" onclick="APP.addMealFromRecipe(${recipe.id})">➕ Ajouter au repas</button>
       </div>
     `).join('');
   }
@@ -2128,14 +2128,14 @@ const APP = (() => {
     if (!container) return;
 
     if (!nutritionState.shoppingList.length) {
-      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Générez une liste à partir de vos recettes</div>';
+      container.innerHTML = '<div class="empty-state-message">Générez une liste à partir de vos recettes</div>';
       return;
     }
 
     container.innerHTML = nutritionState.shoppingList.map((item, i) => `
-      <div style="display:flex; gap:12px; align-items:center; padding:12px; background:var(--surface2); border-radius:var(--r-md);">
-        <input type="checkbox" onchange="APP.toggleShoppingItem(${i})" ${item.checked ? 'checked' : ''} style="cursor:pointer; width:18px; height:18px;">
-        <div style="flex:1; ${item.checked ? 'text-decoration:line-through; color:var(--text3);' : ''}">
+      <div class="shopping-item">
+        <input type="checkbox" class="shopping-item-checkbox" onchange="APP.toggleShoppingItem(${i})" ${item.checked ? 'checked' : ''}>
+        <div class="shopping-item-text ${item.checked ? 'checked' : ''}">
           ${esc(item.item)}
         </div>
         <button class="btn btn-ghost btn-sm" onclick="APP.removeShoppingItem(${i})">✕</button>
