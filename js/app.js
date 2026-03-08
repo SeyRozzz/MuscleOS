@@ -1797,8 +1797,385 @@ const APP = (() => {
   }
 
   /* ─────────────────────────────────────────────
-     INIT GLOBAL
+     PHASE 14: NUTRITION MODULE
   ───────────────────────────────────────────── */
+
+  // Nutrition state
+  const nutritionState = {
+    meals: JSON.parse(localStorage.getItem('mos-meals') || '[]'),
+    recipes: JSON.parse(localStorage.getItem('mos-recipes') || '[]'),
+    shoppingList: JSON.parse(localStorage.getItem('mos-shopping') || '[]'),
+  };
+
+  const QUICK_FOODS = [
+    { name: 'Blanc poulet', cal: 165, protein: 31, carbs: 0, fat: 3.6 },
+    { name: 'Riz cuit', cal: 130, protein: 2.7, carbs: 28, fat: 0.3 },
+    { name: 'Œufs', cal: 155, protein: 13, carbs: 1.1, fat: 11 },
+    { name: 'Brocoli', cal: 34, protein: 2.8, carbs: 7, fat: 0.4 },
+    { name: 'Saumon', cal: 208, protein: 20, carbs: 0, fat: 13 },
+    { name: 'Avocado', cal: 160, protein: 2, carbs: 9, fat: 15 },
+    { name: 'Whey', cal: 110, protein: 24, carbs: 1.5, fat: 0.5 },
+    { name: 'Patate douce', cal: 86, protein: 1.6, carbs: 20, fat: 0.1 },
+  ];
+
+  function addMeal() {
+    const name = document.getElementById('meal-name')?.value?.trim();
+    const type = document.getElementById('meal-type')?.value;
+    const calories = safeNum('meal-calories', 0);
+    const protein = safeNum('meal-protein', 0);
+    const carbs = safeNum('meal-carbs', 0);
+    const fat = safeNum('meal-fat', 0);
+
+    if (!name || calories <= 0) {
+      toast('Remplis nom et calories', 'error');
+      return;
+    }
+
+    const meal = {
+      id: Date.now(),
+      name,
+      type,
+      calories,
+      protein,
+      carbs,
+      fat,
+      date: new Date().toISOString().split('T')[0],
+    };
+
+    nutritionState.meals.push(meal);
+    localStorage.setItem('mos-meals', JSON.stringify(nutritionState.meals));
+
+    // Clearer inputs
+    document.getElementById('meal-name').value = '';
+    document.getElementById('meal-calories').value = '';
+    document.getElementById('meal-protein').value = '';
+    document.getElementById('meal-carbs').value = '';
+    document.getElementById('meal-fat').value = '';
+
+    renderMeals();
+    updateMacros();
+    toast('✓ Repas ajouté', 'ok');
+  }
+
+  function removeMeal(id) {
+    nutritionState.meals = nutritionState.meals.filter(m => m.id !== id);
+    localStorage.setItem('mos-meals', JSON.stringify(nutritionState.meals));
+    renderMeals();
+    updateMacros();
+  }
+
+  function renderMeals() {
+    const container = document.getElementById('meals-list');
+    if (!container) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const todayMeals = nutritionState.meals.filter(m => m.date === today);
+
+    if (!todayMeals.length) {
+      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Aucun repas aujourd\'hui</div>';
+      return;
+    }
+
+    container.innerHTML = todayMeals.map(meal => `
+      <div style="background:var(--surface2); padding:16px; border-radius:var(--r-md); border-left:3px solid var(--fire);">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-weight:600;">${esc(meal.name)}</span>
+          <button class="btn btn-ghost btn-sm" onclick="APP.removeMeal(${meal.id})">✕</button>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; font-size:0.8rem; color:var(--text3);">
+          <div>🔥 ${meal.calories} kcal</div>
+          <div>🔴 ${meal.protein.toFixed(1)}g P</div>
+          <div>🟦 ${meal.carbs.toFixed(1)}g C</div>
+          <div>🟩 ${meal.fat.toFixed(1)}g L</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function updateMacros() {
+    const today = new Date().toISOString().split('T')[0];
+    const todayMeals = nutritionState.meals.filter(m => m.date === today);
+
+    const totals = todayMeals.reduce((acc, meal) => ({
+      calories: acc.calories + meal.calories,
+      protein: acc.protein + meal.protein,
+      carbs: acc.carbs + meal.carbs,
+      fat: acc.fat + meal.fat,
+    }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+
+    // Update display
+    const calEl = document.getElementById('total-calories');
+    if (calEl) calEl.textContent = Math.round(totals.calories);
+
+    // Calculate percentages
+    const proteinCal = totals.protein * 4;
+    const carbsCal = totals.carbs * 4;
+    const fatCal = totals.fat * 9;
+    const totalCal = proteinCal + carbsCal + fatCal || 1;
+
+    const proteinPct = Math.round((proteinCal / totalCal) * 100);
+    const carbsPct = Math.round((carbsCal / totalCal) * 100);
+    const fatPct = Math.round((fatCal / totalCal) * 100);
+
+    // Update bars
+    ['macro-protein-bar', 'macro-carbs-bar', 'macro-fat-bar'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (id === 'macro-protein-bar') el.style.width = proteinPct + '%';
+        else if (id === 'macro-carbs-bar') el.style.width = carbsPct + '%';
+        else el.style.width = fatPct + '%';
+      }
+    });
+
+    // Update pcts and values
+    const elements = [
+      { pct: 'macro-protein-pct', val: 'macro-protein-val', p: proteinPct, g: totals.protein.toFixed(1), t: 'protéine' },
+      { pct: 'macro-carbs-pct', val: 'macro-carbs-val', p: carbsPct, g: totals.carbs.toFixed(1), t: 'glucides' },
+      { pct: 'macro-fat-pct', val: 'macro-fat-val', p: fatPct, g: totals.fat.toFixed(1), t: 'lipides' },
+    ];
+
+    elements.forEach(e => {
+      const pctEl = document.getElementById(e.pct);
+      const valEl = document.getElementById(e.val);
+      if (pctEl) pctEl.textContent = e.p + '%';
+      if (valEl) valEl.textContent = e.g + 'g';
+    });
+
+    // Status
+    const statusEl = document.getElementById('total-macros-status');
+    if (statusEl) {
+      if (totals.calories === 0) statusEl.textContent = '—';
+      else if (proteinPct >= 25 && proteinPct <= 35) statusEl.textContent = '✅ Équilibré';
+      else if (proteinPct > 35) statusEl.textContent = '⚠️ Trop protéiné';
+      else statusEl.textContent = '⚠️ Peu protéiné';
+    }
+  }
+
+  function renderQuickFoods() {
+    const container = document.getElementById('quick-foods');
+    if (!container) return;
+
+    container.innerHTML = QUICK_FOODS.map(food => `
+      <button onclick="APP.addQuickFood('${food.name.replace(/'/g, "\\'")}', ${food.cal}, ${food.protein}, ${food.carbs}, ${food.fat})" style="background:var(--surface2); border:1px solid var(--border); padding:12px; border-radius:var(--r-md); cursor:pointer; transition:all 0.2s; font-size:0.75rem;">
+        <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${food.name}</div>
+        <div style="color:var(--text3); font-size:0.7rem;">${food.cal} kcal</div>
+      </button>
+    `).join('');
+  }
+
+  function addQuickFood(name, cal, p, c, f) {
+    document.getElementById('meal-name').value = name;
+    document.getElementById('meal-calories').value = cal;
+    document.getElementById('meal-protein').value = p;
+    document.getElementById('meal-carbs').value = c;
+    document.getElementById('meal-fat').value = f;
+    toast(`✓ ${name} sélectionné`, 'ok');
+  }
+
+  function addRecipe() {
+    const name = document.getElementById('recipe-name')?.value?.trim();
+    const ingredients = document.getElementById('recipe-ingredients')?.value?.trim();
+    const instructions = document.getElementById('recipe-instructions')?.value?.trim();
+    const protein = safeNum('recipe-protein', 0);
+    const carbs = safeNum('recipe-carbs', 0);
+    const fat = safeNum('recipe-fat', 0);
+    const servings = safeNum('recipe-servings', 1);
+
+    if (!name || !ingredients || servings <= 0) {
+      toast('Remplis les champs obligatoires', 'error');
+      return;
+    }
+
+    const recipe = {
+      id: Date.now(),
+      name,
+      ingredients: ingredients.split('\n').filter(l => l.trim()),
+      instructions,
+      macros: {
+        protein: protein / servings,
+        carbs: carbs / servings,
+        fat: fat / servings,
+      },
+      servings,
+      createdAt: new Date().toISOString(),
+    };
+
+    nutritionState.recipes.push(recipe);
+    localStorage.setItem('mos-recipes', JSON.stringify(nutritionState.recipes));
+
+    // Clear inputs
+    document.getElementById('recipe-name').value = '';
+    document.getElementById('recipe-ingredients').value = '';
+    document.getElementById('recipe-instructions').value = '';
+    document.getElementById('recipe-protein').value = '';
+    document.getElementById('recipe-carbs').value = '';
+    document.getElementById('recipe-fat').value = '';
+    document.getElementById('recipe-servings').value = '';
+
+    renderRecipes();
+    toast('✓ Recette sauvegardée', 'ok');
+  }
+
+  function removeRecipe(id) {
+    nutritionState.recipes = nutritionState.recipes.filter(r => r.id !== id);
+    localStorage.setItem('mos-recipes', JSON.stringify(nutritionState.recipes));
+    renderRecipes();
+  }
+
+  function renderRecipes() {
+    const container = document.getElementById('recipes-list');
+    if (!container) return;
+
+    if (!nutritionState.recipes.length) {
+      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Aucune recette sauvegardée</div>';
+      return;
+    }
+
+    container.innerHTML = nutritionState.recipes.map(recipe => `
+      <div style="background:var(--surface2); padding:16px; border-radius:var(--r-md);">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <div>
+            <div style="font-weight:600;">${esc(recipe.name)}</div>
+            <div style="font-size:0.75rem; color:var(--text3);">${recipe.servings} portion${recipe.servings > 1 ? 's' : ''}</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="APP.removeRecipe(${recipe.id})">✕</button>
+        </div>
+        <div style="font-size:0.8rem; color:var(--text3); margin-bottom:8px;">
+          🔴 ${recipe.macros.protein.toFixed(1)}g P | 🟦 ${recipe.macros.carbs.toFixed(1)}g C | 🟩 ${recipe.macros.fat.toFixed(1)}g L
+        </div>
+        ${recipe.instructions ? `<div style="font-size:0.75rem; color:var(--text3); margin-bottom:6px; font-style:italic;">📝 Instructions sauvegardées</div>` : ''}
+        <button class="btn btn-primary btn-sm" onclick="APP.addMealFromRecipe(${recipe.id})" style="width:100%;">➕ Ajouter au repas</button>
+      </div>
+    `).join('');
+  }
+
+  function addMealFromRecipe(recipeId) {
+    const recipe = nutritionState.recipes.find(r => r.id === recipeId);
+    if (!recipe) return;
+
+    const cal = (recipe.macros.protein * 4) + (recipe.macros.carbs * 4) + (recipe.macros.fat * 9);
+
+    const meal = {
+      id: Date.now(),
+      name: recipe.name,
+      type: 'lunch',
+      calories: Math.round(cal),
+      protein: recipe.macros.protein,
+      carbs: recipe.macros.carbs,
+      fat: recipe.macros.fat,
+      date: new Date().toISOString().split('T')[0],
+    };
+
+    nutritionState.meals.push(meal);
+    localStorage.setItem('mos-meals', JSON.stringify(nutritionState.meals));
+
+    renderMeals();
+    updateMacros();
+    toast(`✓ ${recipe.name} ajouté`, 'ok');
+  }
+
+  function generateShoppingList() {
+    const items = {};
+
+    nutritionState.recipes.forEach(recipe => {
+      recipe.ingredients.forEach(ingredient => {
+        if (ingredient.trim()) {
+          items[ingredient] = (items[ingredient] || 0) + 1;
+        }
+      });
+    });
+
+    const list = Object.keys(items).map(item => ({
+      item,
+      checked: false,
+      count: items[item],
+    }));
+
+    nutritionState.shoppingList = list;
+    localStorage.setItem('mos-shopping', JSON.stringify(list));
+    renderShoppingList();
+    toast('✓ Liste générée', 'ok');
+  }
+
+  function renderShoppingList() {
+    const container = document.getElementById('shopping-list');
+    if (!container) return;
+
+    if (!nutritionState.shoppingList.length) {
+      container.innerHTML = '<div style="text-align:center; color:var(--text3); padding:32px;">Générez une liste à partir de vos recettes</div>';
+      return;
+    }
+
+    container.innerHTML = nutritionState.shoppingList.map((item, i) => `
+      <div style="display:flex; gap:12px; align-items:center; padding:12px; background:var(--surface2); border-radius:var(--r-md);">
+        <input type="checkbox" onchange="APP.toggleShoppingItem(${i})" ${item.checked ? 'checked' : ''} style="cursor:pointer; width:18px; height:18px;">
+        <div style="flex:1; ${item.checked ? 'text-decoration:line-through; color:var(--text3);' : ''}">
+          ${esc(item.item)}
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="APP.removeShoppingItem(${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function toggleShoppingItem(idx) {
+    if (nutritionState.shoppingList[idx]) {
+      nutritionState.shoppingList[idx].checked = !nutritionState.shoppingList[idx].checked;
+      localStorage.setItem('mos-shopping', JSON.stringify(nutritionState.shoppingList));
+      renderShoppingList();
+    }
+  }
+
+  function removeShoppingItem(idx) {
+    nutritionState.shoppingList.splice(idx, 1);
+    localStorage.setItem('mos-shopping', JSON.stringify(nutritionState.shoppingList));
+    renderShoppingList();
+  }
+
+  function clearShoppingList() {
+    if (confirm('Vider la liste?')) {
+      nutritionState.shoppingList = [];
+      localStorage.setItem('mos-shopping', JSON.stringify([]));
+      renderShoppingList();
+    }
+  }
+
+  function printShoppingList() {
+    window.print();
+  }
+
+  function initNutritionTabs() {
+    document.querySelectorAll('.nutrition-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nutrition-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.nutrition-tab-content').forEach(c => c.style.display = 'none');
+
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        const content = document.getElementById(`tab-${tab}`);
+        if (content) content.style.display = 'block';
+
+        // Render on tab switch
+        if (tab === 'macros') {
+          renderQuickFoods();
+          updateMacros();
+        } else if (tab === 'recipes') {
+          renderRecipes();
+        } else if (tab === 'meals') {
+          renderMeals();
+          updateMacros();
+        } else if (tab === 'shopping') {
+          renderShoppingList();
+        }
+      });
+    });
+
+    // Initial render
+    renderMeals();
+    renderRecipes();
+    renderShoppingList();
+    renderQuickFoods();
+    updateMacros();
+  }
   function init() {
     // Navigation
     document.querySelectorAll('[data-page]').forEach(btn => {
@@ -1850,6 +2227,9 @@ const APP = (() => {
     // Phase 12: Community tabs initialization
     initCommunityTabs();
 
+    // Phase 14: Nutrition tabs initialization
+    initNutritionTabs();
+
     // Modal
     document.getElementById('modal-close')?.addEventListener('click', closeModal);
     document.getElementById('modal-overlay')?.addEventListener('click', e => {
@@ -1890,6 +2270,6 @@ const APP = (() => {
   else init();
 
   // API publique
-  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()), switchView, exportToCSV, saveProfile, loadProfile, addFriend, removeFriend, renderFriends, generateShareLink, copyShareLink, calculate1RM, addBodyfat, removeBodyfat, renderBodyfatChart, renderBodyfatList, renderTonnageChart, renderTopExercises, renderAnalyticsView };
+  return { goPage, toggleDay, openExoById, deleteLog, setTimer, setTimerPreset: setTimer, startRestTimer, updateChart, saveCalcHistory, loadCalcHistory, restoreCalcHistoryEntry, toggleAuthForm: () => AUTH.toggleAuthForm(), syncLogbook: () => AUTH.syncLogbook(state.logbook), syncCalculations: () => AUTH.syncCalculations(loadCalcHistory()), switchView, exportToCSV, saveProfile, loadProfile, addFriend, removeFriend, renderFriends, generateShareLink, copyShareLink, calculate1RM, addBodyfat, removeBodyfat, renderBodyfatChart, renderBodyfatList, renderTonnageChart, renderTopExercises, renderAnalyticsView, addMeal, removeMeal, renderMeals, updateMacros, addQuickFood, addRecipe, removeRecipe, renderRecipes, addMealFromRecipe, generateShoppingList, renderShoppingList, toggleShoppingItem, removeShoppingItem, clearShoppingList, printShoppingList };
 
 })();

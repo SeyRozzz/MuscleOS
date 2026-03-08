@@ -78,6 +78,10 @@
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="9" r="5"/><path d="M8 6v3M6 2h4"/></svg>
         Timer
       </button>
+      <button class="nav-btn" data-page="nutrition" aria-label="Nutrition">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M5 8h6"/></svg>
+        Nutrition
+      </button>
       <button class="nav-btn" data-page="community" aria-label="Communauté">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="2"/><circle cx="11" cy="5" r="2"/><path d="M3 11a4 4 0 014-4h2a4 4 0 014 4v1h-10v-1z"/></svg>
         Communauté
@@ -514,6 +518,175 @@
           <span>🏋️ Force &nbsp;— <strong>3–5 min</strong></span>
           <span>💪 Masse &nbsp;— <strong>1:30–2 min</strong></span>
           <span>🔥 Cardio — <strong>30–60s</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 14: NUTRITION PAGE -->
+  <div class="page" id="page-nutrition">
+    <div class="page-container">
+      <div class="page-hero">
+        <div class="page-eyebrow">🍎 Planification nutritionnelle</div>
+        <h1 class="page-title">Nutrition<br><span>& Macros</span></h1>
+        <p class="page-sub">Construis tes repas, suivi les macros, gère ta liste de courses.</p>
+      </div>
+
+      <!-- TABS: Meals | Macros | Recipes | Shopping -->
+      <div style="display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px; flex-wrap:wrap;">
+        <button class="nutrition-tab active" data-tab="meals">🍽️ Mes repas</button>
+        <button class="nutrition-tab" data-tab="macros">📊 Macros</button>
+        <button class="nutrition-tab" data-tab="recipes">📖 Recettes</button>
+        <button class="nutrition-tab" data-tab="shopping">🛒 Courses</button>
+      </div>
+
+      <!-- TAB: MEALS -->
+      <div id="tab-meals" class="nutrition-tab-content" style="display:block;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Créer un repas</div></div><div class="card-icon">🍽️</div></div>
+          <div class="grid-2" style="gap:12px; margin-bottom:16px;">
+            <div class="form-group">
+              <label class="field-label">Nom du repas</label>
+              <input type="text" id="meal-name" placeholder="ex: Poulet riz broccoli" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Type</label>
+              <select id="meal-type" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+                <option value="breakfast">🌅 Petit-déjeuner</option>
+                <option value="snack1">🥤 Collation 1</option>
+                <option value="lunch">🥗 Déjeuner</option>
+                <option value="snack2">🥤 Collation 2</option>
+                <option value="dinner">🍲 Dîner</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Calories (kcal)</label>
+              <input type="number" id="meal-calories" placeholder="500" min="0" max="5000" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Protéines (g)</label>
+              <input type="number" id="meal-protein" placeholder="30" min="0" max="200" step="0.1" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Glucides (g)</label>
+              <input type="number" id="meal-carbs" placeholder="50" min="0" max="300" step="0.1" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Lipides (g)</label>
+              <input type="number" id="meal-fat" placeholder="15" min="0" max="150" step="0.1" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary btn-lg" id="btn-add-meal" onclick="APP.addMeal()">➕ Ajouter le repas</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Aujourd'hui</div></div></div>
+          <div id="meals-list" style="display:grid; gap:12px;"></div>
+        </div>
+      </div>
+
+      <!-- TAB: MACROS -->
+      <div id="tab-macros" class="nutrition-tab-content" style="display:none;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Totaux du jour</div></div></div>
+          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:20px;">
+            <div style="background:var(--surface2); padding:16px; border-radius:var(--r-md); text-align:center; border-left:3px solid var(--fire);">
+              <div style="font-size:1.5rem; font-weight:700; color:var(--fire); margin-bottom:4px;" id="total-calories">0</div>
+              <div style="font-size:0.8rem; color:var(--text3);">Calories (kcal)</div>
+            </div>
+            <div style="background:var(--surface2); padding:16px; border-radius:var(--r-md); text-align:center; border-left:3px solid var(--ice);">
+              <div style="font-size:1.5rem; font-weight:700; color:var(--ice); margin-bottom:4px;" id="total-macros-status">—</div>
+              <div style="font-size:0.8rem; color:var(--text3);">État macros</div>
+            </div>
+          </div>
+
+          <div class="section-label">Répartition</div>
+          <div style="display:grid; gap:12px;">
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem;">
+                <span>🔴 Protéines</span>
+                <span style="color:var(--fire); font-weight:700;" id="macro-protein-pct">0%</span>
+              </div>
+              <div style="height:8px; background:var(--surface2); border-radius:2px; overflow:hidden;">
+                <div style="height:100%; background:var(--fire); width:0%; transition:width 0.3s;" id="macro-protein-bar"></div>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text3); margin-top:2px;" id="macro-protein-val">0g / 0g</div>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem;">
+                <span>🟦 Glucides</span>
+                <span style="color:var(--ice); font-weight:700;" id="macro-carbs-pct">0%</span>
+              </div>
+              <div style="height:8px; background:var(--surface2); border-radius:2px; overflow:hidden;">
+                <div style="height:100%; background:var(--ice); width:0%; transition:width 0.3s;" id="macro-carbs-bar"></div>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text3); margin-top:2px;" id="macro-carbs-val">0g / 0g</div>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem;">
+                <span>🟩 Lipides</span>
+                <span style="color:var(--lime); font-weight:700;" id="macro-fat-pct">0%</span>
+              </div>
+              <div style="height:8px; background:var(--surface2); border-radius:2px; overflow:hidden;">
+                <div style="height:100%; background:var(--lime); width:0%; transition:width 0.3s;" id="macro-fat-bar"></div>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text3); margin-top:2px;" id="macro-fat-val">0g / 0g</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Aliments courants</div></div></div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px;" id="quick-foods"></div>
+        </div>
+      </div>
+
+      <!-- TAB: RECIPES -->
+      <div id="tab-recipes" class="nutrition-tab-content" style="display:none;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Créer une recette</div></div><div class="card-icon">👨‍🍳</div></div>
+          <div style="display:grid; gap:12px; margin-bottom:16px;">
+            <div class="form-group">
+              <label class="field-label">Nom de la recette</label>
+              <input type="text" id="recipe-name" placeholder="ex: Tiramisu protéiné" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Ingrédients (max 10)</label>
+              <textarea id="recipe-ingredients" placeholder="Ligne 1: Ingrédient (quantité)&#10;Ligne 2: Ingrédient (quantité)" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text); font-family:monospace; font-size:0.85rem; resize:vertical; min-height:80px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Instructions de préparation</label>
+              <textarea id="recipe-instructions" placeholder="Étapes de préparation..." style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text); font-family:var(--font-body); resize:vertical; min-height:80px;"></textarea>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
+              <div class="form-group"><label class="field-label">Protéines (g)</label><input type="number" id="recipe-protein" placeholder="35" min="0" step="0.1" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);"></div>
+              <div class="form-group"><label class="field-label">Glucides (g)</label><input type="number" id="recipe-carbs" placeholder="40" min="0" step="0.1" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);"></div>
+              <div class="form-group"><label class="field-label">Lipides (g)</label><input type="number" id="recipe-fat" placeholder="12" min="0" step="0.1" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);"></div>
+              <div class="form-group"><label class="field-label">Portions</label><input type="number" id="recipe-servings" placeholder="2" min="1" step="0.5" style="background:var(--surface2); border:1px solid var(--border); padding:8px; border-radius:var(--r-md); color:var(--text);"></div>
+            </div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary btn-lg" id="btn-add-recipe" onclick="APP.addRecipe()">💾 Sauvegarder recette</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Mes recettes</div></div></div>
+          <div id="recipes-list" style="display:grid; gap:12px;"></div>
+        </div>
+      </div>
+
+      <!-- TAB: SHOPPING -->
+      <div id="tab-shopping" class="nutrition-tab-content" style="display:none;">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Liste de courses générée</div></div></div>
+          <div style="display:flex; gap:8px; margin-bottom:16px;">
+            <button class="btn btn-secondary btn-sm" onclick="APP.generateShoppingList()">🔄 Générer</button>
+            <button class="btn btn-secondary btn-sm" onclick="APP.printShoppingList()">🖨️ Imprimer</button>
+            <button class="btn btn-ghost btn-sm" onclick="APP.clearShoppingList()">🗑️ Vider</button>
+          </div>
+          <div id="shopping-list" style="display:grid; gap:8px;"></div>
         </div>
       </div>
 

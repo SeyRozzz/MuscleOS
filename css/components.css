@@ -1012,6 +1012,32 @@ canvas#prog-chart {
   color: var(--text4);
 }
 
+/* PHASE 14: NUTRITION TABS */
+.nutrition-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nutrition-tab:hover {
+  color: var(--text);
+}
+
+.nutrition-tab.active {
+  color: var(--fire);
+  border-bottom-color: var(--fire);
+}
+
+.nutrition-tab-content {
+  animation: fadeIn 0.2s ease-in;
+}
+
 /* Scrollbar mobile */
 @media (max-width: 700px) {
   .stat-cards-grid { grid-template-columns: 1fr 1fr; }
