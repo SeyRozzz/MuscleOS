@@ -297,6 +297,296 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   LOGBOOK — Analytics Row Styles
+   ═════════════════════════════════════════════════════════════════ */
+
+.logbook-table-advice {
+  color: var(--color-text-3);
+  font-size: 0.8em;
+}
+
+.logbook-row-info {
+  flex: 1;
+}
+
+.logbook-row-detail {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-3);
+}
+
+.logbook-exercise-entry {
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) 0;
+}
+
+.logbook-exercise-entry:last-child {
+  border-bottom: none;
+}
+
+.logbook-exercise-notes {
+  font-size: var(--font-size-xs);
+  color: var(--color-ice);
+  margin-top: var(--space-1);
+}
+
+.logbook-exercise-tempo {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-3);
+}
+
+.logbook-exercise-rest {
+  text-align: right;
+}
+
+.logbook-exercise-rest-value {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-3);
+  margin-top: var(--space-1);
+}
+
+.logbook-session-empty {
+  text-align: center;
+  padding: var(--space-8);
+  color: var(--color-text-3);
+}
+
+.logbook-session-actions {
+  margin-top: var(--space-4);
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LOGBOOK — Weekly Stats
+   ═════════════════════════════════════════════════════════════════ */
+
+.weekly-stat-value {
+  color: var(--color-text);
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-700);
+}
+
+.analytics-stat-card {
+  text-align: center;
+  padding: var(--space-4);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+}
+
+.analytics-stat-value {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-700);
+  color: var(--color-fire);
+  margin-bottom: var(--space-1);
+}
+
+.analytics-stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  font-weight: var(--font-weight-600);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ANALYTICS — Rankings and Progress
+   ═════════════════════════════════════════════════════════════════ */
+
+.ranking-item-name {
+  font-weight: var(--font-weight-600);
+}
+
+.ranking-item-value {
+  color: var(--color-fire);
+  font-weight: var(--font-weight-700);
+}
+
+.ranking-progress-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-3);
+}
+
+.ranking-bar-container {
+  background: var(--color-ice);
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ranking-bar-fill {
+  background: var(--color-fire);
+  height: 100%;
+  transition: width var(--transition-slow) var(--ease-out);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NUTRITION — Meals and Recipes
+   ═════════════════════════════════════════════════════════════════ */
+
+.nutrition-empty {
+  text-align: center;
+  color: var(--color-text-3);
+  padding: var(--space-8);
+}
+
+.meal-card {
+  background: var(--color-surface-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-fire);
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.meal-name {
+  font-weight: var(--font-weight-600);
+}
+
+.meal-time {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+}
+
+.meal-macros {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+}
+
+.food-quick-button {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast) var(--ease-out);
+  font-size: var(--font-size-xs);
+}
+
+.food-quick-button:hover {
+  border-color: var(--color-fire);
+  background: rgba(249, 115, 22, 0.05);
+}
+
+.food-quick-name {
+  font-weight: var(--font-weight-600);
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.food-quick-calories {
+  color: var(--color-text-3);
+  font-size: var(--font-size-xs);
+}
+
+.recipe-card {
+  background: var(--color-surface-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.recipe-name {
+  font-weight: var(--font-weight-600);
+  color: var(--color-text);
+}
+
+.recipe-servings {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+}
+
+.recipe-macros {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-3);
+  margin-bottom: var(--space-2);
+}
+
+.recipe-instructions {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-3);
+  margin-bottom: var(--space-2);
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SHOPPING LIST — Checklist Items
+   ═════════════════════════════════════════════════════════════════ */
+
+.shopping-list-empty {
+  text-align: center;
+  color: var(--color-text-3);
+  padding: var(--space-8);
+}
+
+.shopping-item {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+}
+
+.shopping-item-checkbox {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.shopping-item-text {
+  flex: 1;
+  transition: all var(--transition-fast) var(--ease-out);
+}
+
+.shopping-item-text.checked {
+  text-decoration: line-through;
+  color: var(--color-text-3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CALCULATOR — 1RM and Analytics Sections
+   ═════════════════════════════════════════════════════════════════ */
+
+.calc-1rm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.calc-1rm-input {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+}
+
+.calc-1rm-input:focus {
+  outline: none;
+  border-color: var(--color-fire);
+  box-shadow: 0 0 0 3px var(--color-fire-dim);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    RESPONSIVE
    ═════════════════════════════════════════════════════════════════ */
 
@@ -313,4 +603,17 @@
     flex-direction: column;
     gap: var(--space-1);
   }
+
+  .analytics-stat-card {
+    padding: var(--space-3);
+  }
+
+  .meal-macros {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calc-1rm-grid {
+    grid-template-columns: 1fr;
+  }
 }
+
