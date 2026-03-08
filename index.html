@@ -910,6 +910,66 @@
   </div>
 </nav>
 
+<!-- PHASE 15: SERVICE WORKER & PWA -->
+<script>
+  /* Register Service Worker for offline support and caching */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(reg => {
+          console.log('[PWA] Service Worker registered:', reg.scope);
+
+          // Check for updates every 1 hour
+          setInterval(() => {
+            reg.update();
+          }, 3600000);
+
+          // Listen for updates
+          reg.addEventListener('updatefound', () => {
+            const newSW = reg.installing;
+            newSW.addEventListener('statechange', () => {
+              if (newSW.state === 'waiting') {
+                // New SW ready, offer update option
+                const msg = document.createElement('div');
+                msg.style.cssText = `
+                  position: fixed;
+                  bottom: 24px;
+                  right: 24px;
+                  background: var(--fire, #F97316);
+                  color: white;
+                  padding: 16px 24px;
+                  border-radius: 8px;
+                  font-size: 0.9rem;
+                  z-index: 9999;
+                  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+                `;
+                msg.innerHTML = '🔄 Mise à jour disponible <button onclick="location.reload()" style="background:rgba(0,0,0,0.2);border:none;color:white;padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:12px;font-weight:600;">Actualiser</button>';
+                document.body.appendChild(msg);
+
+                // Auto-remove after 30 seconds
+                setTimeout(() => msg.remove(), 30000);
+
+                // Listen for SW activation
+                newSW.addEventListener('controllerchange', () => {
+                  console.log('[PWA] Update applied, page will reload on next visit');
+                });
+              }
+            });
+          });
+        })
+        .catch(err => console.warn('[PWA] SW registration failed:', err));
+    });
+  }
+
+  /* Detect offline/online status */
+  window.addEventListener('online', () => {
+    console.log('[PWA] Online');
+  });
+  window.addEventListener('offline', () => {
+    console.log('[PWA] Offline mode activated');
+  });
+</script>
+
 <script src="js/auth.js" defer></script>
 <script src="js/algorithms.js" defer></script>
 <script src="js/data.js" defer></script>
